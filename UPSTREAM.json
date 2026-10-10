@@ -1,0 +1,10 @@
+{
+  "upstream": "https://github.com/morluto/rea",
+  "source_commit": "33b9b31a6fb50cc3e6f4591d0395dbba15b51f13",
+  "license": "MIT",
+  "maintainer": "Alan Vo",
+  "email": "alanvo@gmail.com",
+  "product": "axiom-lens-alan-vo",
+  "version": "1.0.0",
+  "issue": "https://github.com/morluto/rea/issues/1384"
+}

@@ -2,7 +2,9 @@
 
 **English** · [简体中文](README_zh.md) · [繁體中文](README_zh-TW.md) · [日本語](README_ja.md) · [한국어](README_ko.md) · [Türkçe](README_tr.md) · [Русский](README_ru.md) · [Tiếng Việt](README_vi.md) · [ไทย](README_th.md) · [Deutsch](README_de.md) · [Español](README_es.md) · [Français](README_fr.md) · [Українська](README_uk.md) · [Polski](README_pl.md) · [Português (Brasil)](README_pt-BR.md) · [العربية](README_ar.md) · [فارسی](README_fa.md)
 
-# REA: Reverse Engineer Anything
+# Axiom Lens
+
+> **Axiom Lens** is a derivative of REA: Reverse Engineer Anything (<https://github.com/morluto/rea>). Package identifiers (`rea-agents`, `rea`) are preserved for compatibility. See [Upstream and Improvements](#upstream-and-improvements) below.
 
 ### One MCP for reverse engineering across binaries, applications, and runtime behavior.
 
@@ -334,6 +336,22 @@ to improve the code or docs.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and checks,
 [testing](docs/testing.md) for verification lanes, and the
 [architecture map](docs/architecture.mermaid) for the project structure.
+
+## Upstream and Improvements
+
+**Axiom Lens** is an owned derivative of REA (<https://github.com/morluto/rea>) (MIT license). The upstream project is authored and maintained by the REA contributors at <https://github.com/morluto/rea>. All original copyright notices, LICENSE, and third-party notices are preserved exactly.
+
+**Maintainer:** Alan Vo \<alanvo@gmail.com\>
+
+This repository is **not** an upstream contribution and does not submit PRs to morluto/rea.
+
+### Improvements over upstream baseline (33b9b31)
+
+| Change | Source issue |
+|--------|-------------|
+| **Fix `inspect_web_page` rejecting every target on Chromium 150** — Chromium 150 reports the opaque placeholder `":"` from `Page.getFrameTree` for a committed same-origin page, causing the origin allowlist check to fail and throwing `target_not_allowed` for every allowed target. Added `isUninformativeFrameUrl()` to detect opaque/placeholder frame-tree URLs and fall back to the authoritative URL from the HTTP `/json/list` endpoint (`context.target.url`) in `CdpWebMcpDiscovery` and the `assertStableAuthorizedFrame` final gate. Per the issue, the URL from the target/endpoint layer is still accurate; the opaque placeholder is treated as unknown-not-disallowed rather than rejected. | morluto/rea#1384 (<https://github.com/morluto/rea/issues/1384>) |
+
+**What differs from upstream:** upstream throws `target_not_allowed` for every target observed through Chromium 150 (verified in the issue). Axiom Lens recovers the authoritative URL from the HTTP endpoint record and proceeds with observation. A real disallowed HTTP/HTTPS URL still rejects immediately; only genuinely uninformative placeholders trigger recovery.
 
 ## License
 

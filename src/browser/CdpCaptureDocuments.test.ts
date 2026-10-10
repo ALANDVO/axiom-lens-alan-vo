@@ -4,6 +4,7 @@ import {
   captureAccessibility,
   captureFrames,
   captureResources,
+  isUninformativeFrameUrl,
 } from "./CdpCaptureDocuments.js";
 
 const origin = "https://app.example.test";
@@ -92,5 +93,48 @@ describe("CDP document capture", () => {
       retained_bytes: 0,
       excluded_fields: 2,
     });
+  });
+});
+
+describe("isUninformativeFrameUrl — Chromium 150 opaque placeholder regression (issue #1384)", () => {
+  // Regression: Chromium 150 reports ":" from Page.getFrameTree for a
+  // committed, fully loaded same-origin page. Before the fix this caused
+  // inspect_web_page to throw target_not_allowed for every allowed target.
+  it('Chromium 150 opaque frame-tree placeholder ":" is uninformative', () => {
+    expect(isUninformativeFrameUrl(":")).toBe(true);
+  });
+
+  it("undefined frame URL is uninformative", () => {
+    expect(isUninformativeFrameUrl(undefined)).toBe(true);
+  });
+
+  it("empty string frame URL is uninformative", () => {
+    expect(isUninformativeFrameUrl("")).toBe(true);
+  });
+
+  it('"about:blank" is uninformative', () => {
+    expect(isUninformativeFrameUrl("about:blank")).toBe(true);
+  });
+
+  it('"about:srcdoc" is uninformative', () => {
+    expect(isUninformativeFrameUrl("about:srcdoc")).toBe(true);
+  });
+
+  it("chrome-extension URL is uninformative (non-http scheme)", () => {
+    expect(
+      isUninformativeFrameUrl("chrome-extension://abc/page.html"),
+    ).toBe(true);
+  });
+
+  it("real http URL is informative", () => {
+    expect(
+      isUninformativeFrameUrl("http://127.0.0.1:3000/app?probe=1"),
+    ).toBe(false);
+  });
+
+  it("real https URL is informative", () => {
+    expect(isUninformativeFrameUrl("https://app.example.test/page")).toBe(
+      false,
+    );
   });
 });

@@ -23,6 +23,7 @@ import {
 } from "./CdpCaptureValues.js";
 import {
   captureFrames,
+  isUninformativeFrameUrl,
   mainFrameUrl,
   walkFrameTrees,
 } from "./CdpCaptureDocuments.js";
@@ -61,8 +62,20 @@ export const discoverWebMcp = async (
     context.signal,
   );
   const initialUrl = mainFrameUrl(frameTree);
-  if (allowedSanitizedUrl(initialUrl, origins) === undefined)
+  // Chromium 150+ may report an opaque placeholder URL (e.g. ":") from
+  // Page.getFrameTree while the target/endpoint layer still has the real URL.
+  // Treat an uninformative frame-tree URL as unknown rather than disallowed,
+  // and recover the authoritative URL from the already-discovered target
+  // record which originates from the HTTP /json/list endpoint.
+  const effectiveInitialUrl = isUninformativeFrameUrl(initialUrl)
+    ? context.target.url
+    : initialUrl;
+  if (allowedSanitizedUrl(effectiveInitialUrl, origins) === undefined)
     throw new BrowserObservationError("inspect_web_page", "target_not_allowed");
+  if (isUninformativeFrameUrl(initialUrl))
+    limitations.push(
+      "Main-frame URL from Page.getFrameTree was uninformative (browser may report an opaque placeholder); origin was recovered from the target endpoint record.",
+    );
   const frames = captureFrames(
     frameTree,
     origins,
@@ -115,7 +128,7 @@ export const discoverWebMcp = async (
         "discover_webmcp_tools",
         context.signal,
       );
-    await assertStableAuthorizedFrame(context, initialUrl, origins);
+    await assertStableAuthorizedFrame(context, effectiveInitialUrl, origins);
     if (frameScope.transientFrames.size > 0)
       completeness.attachLimited("webmcp_tools");
     return buildWebMcpResult({
@@ -326,7 +339,7 @@ const removeFrame = (
 
 const assertStableAuthorizedFrame = async (
   context: DiscoveryContext,
-  initialUrl: string | undefined,
+  effectiveInitialUrl: string | undefined,
   origins: ReadonlySet<string>,
 ): Promise<void> => {
   const finalTree = await context.connection.send(
@@ -336,9 +349,17 @@ const assertStableAuthorizedFrame = async (
     context.signal,
   );
   const finalUrl = mainFrameUrl(finalTree);
-  if (allowedSanitizedUrl(finalUrl, origins) === undefined)
+  // Apply the same uninformative-URL recovery as the initial gate: a
+  // Chromium 150 opaque placeholder is not a disallowed URL, so fall back
+  // to the target endpoint record.
+  const effectiveFinalUrl = isUninformativeFrameUrl(finalUrl)
+    ? context.target.url
+    : finalUrl;
+  if (allowedSanitizedUrl(effectiveFinalUrl, origins) === undefined)
     throw new BrowserObservationError("inspect_web_page", "target_not_allowed");
-  if (finalUrl !== initialUrl)
+  // Skip the stability comparison when the final URL is uninformative:
+  // the frame-tree placeholder cannot prove a navigation occurred.
+  if (!isUninformativeFrameUrl(finalUrl) && effectiveFinalUrl !== effectiveInitialUrl)
     throw new BrowserObservationError("inspect_web_page", "target_changed");
 };
 
