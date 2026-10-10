@@ -66,6 +66,33 @@ export const mainFrameUrl = (result: unknown): string | undefined =>
     recordValue(recordValue(requiredRecord(result).frameTree)?.frame)?.url,
   );
 
+/**
+ * Return true when the frame-tree URL cannot be used for origin-allowlist
+ * decisions. Chromium 150+ reports the opaque placeholder `":"` (with
+ * `securityOrigin: "://"`) for a committed same-origin page before the
+ * frame-tree layer catches up. The endpoint/target layer still has the real
+ * URL via `Target.getTargetInfo` or the HTTP `/json/list` response.
+ *
+ * Treat the following as uninformative (not as disallowed):
+ * - `undefined` — absent URL field
+ * - `""` — empty string
+ * - `":"` — Chromium 150 opaque-origin placeholder
+ * - `"about:blank"` / `"about:srcdoc"` — browser-generated navigable documents
+ *
+ * A real HTTP/HTTPS URL with a parseable origin is always informative.
+ */
+export const isUninformativeFrameUrl = (url: string | undefined): boolean => {
+  if (url === undefined || url === "" || url === ":") return true;
+  if (url === "about:blank" || url === "about:srcdoc") return true;
+  try {
+    const { protocol } = new URL(url);
+    return protocol !== "http:" && protocol !== "https:";
+  } catch {
+    // Unparseable strings are also uninformative.
+    return true;
+  }
+};
+
 /** Normalize every allowed resource. */
 export const captureResources = (
   result: unknown,

@@ -201,6 +201,29 @@ describe("CdpBrowserProvider: transient WebMCP frames", () => {
     ).toBe(1);
   });
 
+  it("recovers from Chromium 150 opaque frame placeholder during discovery", async () => {
+    const browser = await startFakeCdpBrowser({
+      webMcpTools: true,
+      attachedFrameUrl: ":",
+    });
+    trackBrowser(browser);
+    const result = await new CdpBrowserProvider().discoverWebMcpTools(
+      discoverWebMcpToolsInputSchema.parse({
+        cdp_endpoint: browser.endpoint,
+        allowed_origins: [browser.allowedOrigin],
+        target_id: "allowed-page",
+        observation_ms: 0,
+      }),
+    );
+
+    if (!result.ok) throw result.error;
+    expect(result.value.limitations).toContainEqual(
+      expect.stringContaining(
+        "Main-frame URL from Page.getFrameTree was uninformative",
+      ),
+    );
+  });
+
   it("accepts fresh child registrations after a stable frame commit", async () => {
     const browser = await startFakeCdpBrowser({
       webMcpTools: true,
