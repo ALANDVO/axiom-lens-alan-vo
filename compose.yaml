@@ -1,0 +1,86 @@
+# Axiom Lens - Docker Compose
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: axiom-lens-backend
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - DATABASE_URL=sqlite+aiosqlite:///./data/axiom_lens.db
+      - SECRET_KEY=${SECRET_KEY:-changeme-in-production-min-32-chars}
+      - OIDC_ENABLED=${OIDC_ENABLED:-true}
+      - OIDC_ISSUER_URL=${OIDC_ISSUER_URL:-http://keycloak:8080/realms/axiom-lens}
+      - OIDC_CLIENT_ID=${OIDC_CLIENT_ID:-axiom-lens}
+      - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET:-}
+      - OIDC_REDIRECT_URI=http://localhost:8000/api/v1/auth/callback
+      - DEMO_MODE=false
+      - CORS_ORIGINS=http://localhost,http://localhost:3000
+    volumes:
+      - backend_data:/app/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/api/v1/health', timeout=5).raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - axiom-lens-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: axiom-lens-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - axiom-lens-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: axiom-lens-keycloak
+    restart: unless-stopped
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      - KC_DB=dev-file
+      - KC_HEALTH_ENABLED=true
+      - KC_METRICS_ENABLED=true
+      - KC_HOSTNAME=localhost
+      - KC_HTTP_ENABLED=true
+      - KC_PROXY=edge
+    command:
+      - start-dev
+      - --import-realm
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health/ready"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 5
+    networks:
+      - axiom-lens-network
+
+volumes:
+  backend_data:
+  keycloak_data:
+
+networks:
+  axiom-lens-network:
+    driver: bridge

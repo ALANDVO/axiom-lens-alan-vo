@@ -67,3 +67,8 @@ Thumbs.db
 /docs/public/product-catalog.json
 /docs/verification/managed-conformance-manifest.json
 /docs/verification/managed-conformance-ledger.json
+
+# Secrets and local databases
+.env
+*.db
+*.sqlite
