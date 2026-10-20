@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "name": "axiom-lens-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "AI-assisted reverse engineering analysis platform",
+  "summary": "Work in progress: axiom-lens-alan-vo",
+  "workflows": [
+    "Binary analysis with pseudocode, assembly, symbols, and call graphs",
+    "JavaScript/Electron application module and IPC boundary analysis",
+    "Process behavior capture and semantic comparison with temporal difference explanation"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "status": "work-in-progress"
+}

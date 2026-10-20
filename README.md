@@ -1,358 +1,229 @@
-<div align="center">
+# Axiom Lens — Alan Vo
 
-**English** · [简体中文](README_zh.md) · [繁體中文](README_zh-TW.md) · [日本語](README_ja.md) · [한국어](README_ko.md) · [Türkçe](README_tr.md) · [Русский](README_ru.md) · [Tiếng Việt](README_vi.md) · [ไทย](README_th.md) · [Deutsch](README_de.md) · [Español](README_es.md) · [Français](README_fr.md) · [Українська](README_uk.md) · [Polski](README_pl.md) · [Português (Brasil)](README_pt-BR.md) · [العربية](README_ar.md) · [فارسی](README_fa.md)
+> Work in progress. This checkpoint may be incomplete or fail tests. See PLAN.md and STATUS.md before use.
 
-# Axiom Lens
 
-> **Axiom Lens** is a derivative of REA: Reverse Engineer Anything (<https://github.com/morluto/rea>). Package identifiers (`rea-agents`, `rea`) are preserved for compatibility. See [Upstream and Improvements](#upstream-and-improvements) below.
+> **Axiom Lens** is an AI-assisted reverse engineering analysis platform derived from REA (Reverse Engineer Anything). It provides a web-based interface for analyzing binaries, JavaScript/Electron applications, and process behavior with AI-powered insights.
 
-### One MCP for reverse engineering across binaries, applications, and runtime behavior.
+## Quick Start
 
-**See a feature you like. Understand how it works, down to the binary level.**
+### Prerequisites
+- Docker and Docker Compose
+- Or: Python 3.12+, Node.js 24+, npm
 
-[![npm version](https://img.shields.io/npm/v/rea-agents?style=flat-square&color=cb3837)](https://www.npmjs.com/package/rea-agents)
-[![CI](https://img.shields.io/github/actions/workflow/status/morluto/rea/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/morluto/rea/actions/workflows/ci.yml)
-[![MCP tool catalog](https://img.shields.io/badge/MCP-tool_catalog-5c4ee5?style=flat-square)](docs/mcp-contracts.md#generated-catalog)
-[![Node.js requirements](https://img.shields.io/badge/Node.js-requirements-339933?style=flat-square&logo=nodedotjs&logoColor=white)](#what-you-can-analyze)
-[![skills.sh](https://skills.sh/b/morluto/rea?style=flat-square)](https://skills.sh/morluto/rea/reverse-engineer-anything)
-[![MIT license](https://img.shields.io/badge/license-MIT-f4c430?style=flat-square)](LICENSE)
-[![Discord](https://img.shields.io/discord/1556595354999332884?logo=discord&logoColor=white&label=Discord&color=5865F2)](https://discord.gg/GkcryMnJDM)
-
-<a href="https://trendshift.io/repositories/82054?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-82054" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/82054" alt="morluto%2Frea | Trendshift" width="250" height="55"/></a>
-
-**[Website](https://rea.tools/) · [Guides](https://rea.tools/guides/) · [Showcases](https://rea.tools/showcase/)**
-
-[Quick start](#quick-start) · [How REA works](#how-rea-works) · [What you can analyze](#what-you-can-analyze) · [Showcases](#showcases) · [FAQ](#faq) · [Documentation](#documentation)
-
-<code>npx rea-agents setup</code>
-
-<br />
-
-<img src="docs/assets/rea-hopper-analysis.png" alt="REA launching its analysis bridge inside Hopper while inspecting a native binary" width="1200" />
-
-<br /><br />
-
-<table aria-label="REA community">
-<tr>
-<td align="center" width="360">
-  <a href="https://discord.gg/GkcryMnJDM">
-    <img src="docs/assets/discord.svg" height="42" alt="Discord" /><br />
-    <strong>Join the Reverse Engineering Community</strong>
-  </a><br />
-  <sub>Discord · Q&amp;A · Show and Tell</sub>
-</td>
-</tr>
-</table>
-
-<br />
-
-</div>
-
----
-
-See a feature in an app that you want in your own product? Ask your agent to investigate it with REA. It can inspect the app without its source code, explain how the feature works, show the evidence, and build a version for your project.
-
-REA connects your agent to tools for inspecting native binaries, JavaScript and Electron apps, .NET assemblies, and websites. You can also use the same tools from your terminal. Analysis runs locally, and results include the evidence and limitations behind each conclusion.
-
-Setup registers REA with your agent and installs matching workflow instructions. Native analysis can use an existing Hopper, Ghidra, or IDA installation; setup can optionally install Hopper with approval. Static JavaScript analysis needs no native analysis engine.
-
-> **[Visit the REA website](https://rea.tools/)** for setup instructions, illustrated guides, and real case studies.
-
-## Quick start
-
-### Set up your agent
-
-With Node.js and npm installed, run:
+### Using Docker Compose (Recommended)
 
 ```bash
-npx rea-agents setup
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with your settings (especially SECRET_KEY for production)
+# Start all services
+docker compose up --build -d
+
+# Access the application
+# Frontend: http://localhost
+# Backend API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+# Keycloak Admin: http://localhost:8080 (admin/admin)
 ```
 
-Choose your agents, review the proposed changes, and approve them. Setup adds
-REA's MCP server and matching workflow instructions, with backups of existing
-configuration. Restart your agent afterward.
+### Local Development
 
-Setup supports Claude Code, Codex, Cursor, Gemini CLI, Grok Build and
-[other agents](docs/installation.md#supported-agents). See
-[installation and setup](docs/installation.md) for provider configuration and
-manual MCP registration.
-
-### Ask your agent
-
-```text
-Understand how search works in the Notes app, show me the evidence, and build a
-similar feature for my project.
+**Backend:**
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp ../.env.example .env
+# Edit .env as needed
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Replace Notes with your target app and the feature you want to understand.
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-### Use the terminal
+**Run Tests:**
+```bash
+# Backend tests
+cd backend
+source .venv/bin/activate
+PYTHONPATH=backend python -m pytest tests/ -v
 
-Inspect an extracted JavaScript/Electron app directory or ASAR:
+# Frontend tests
+cd frontend
+npm test
+```
+
+## Architecture
+
+```mermaid
+graph TD
+    subgraph "Frontend"
+        UI["React + TypeScript + Vite"]
+    end
+    
+    subgraph "Backend"
+        API["FastAPI"]
+        DB[(SQLite)]
+        AUTH["OIDC Keycloak"]
+    end
+    
+    subgraph "Infrastructure"
+        NGINX["Nginx"]
+        COMPOSE["Docker Compose"]
+    end
+    
+    UI -->|HTTPS| NGINX
+    NGINX -->|Proxy /api| API
+    API --> DB
+    API --> AUTH
+    COMPOSE --> UI
+    COMPOSE --> API
+    COMPOSE --> AUTH
+```
+
+## Features
+
+### Authentication
+- OIDC Keycloak integration with authorization code flow + PKCE
+- Demo mode for development (no Keycloak required)
+- HttpOnly SameSite cookies with CSRF protection
+- Role-based access control (viewer, operator, admin)
+
+### Analysis Management
+- Create, list, view, update, delete analyses
+- Three analysis types: Binary, JavaScript/Electron, Process
+- Pagination and filtering
+- Export results as JSON
+- Audit logging for security events
+
+### Analysis Workflows (UI Ready, Engine Integration Planned)
+1. **Binary Analysis** - Pseudocode, assembly, strings, symbols, calls, references
+2. **JavaScript/Electron Analysis** - Modules, imports, IPC boundaries, native addons
+3. **Process Comparison** - Terminal output, filesystem observations, semantic diff
+
+## API Reference
+
+### Health & Version
+- `GET /api/v1/health` - Health check
+- `GET /api/v1/version` - Version info
+- `GET /api/v1/ready` - Kubernetes readiness probe
+- `GET /api/v1/live` - Kubernetes liveness probe
+
+### Authentication
+- `GET /api/v1/auth/login` - Initiate OIDC login
+- `GET /api/v1/auth/callback` - OIDC callback
+- `POST /api/v1/auth/logout` - Logout
+- `GET /api/v1/auth/me` - Current user info
+- `POST /api/v1/auth/demo-token` - Get demo token (dev only)
+
+### Analyses
+- `POST /api/v1/analyses` - Create analysis
+- `GET /api/v1/analyses` - List analyses (paginated, filterable)
+- `GET /api/v1/analyses/{id}` - Get analysis
+- `PATCH /api/v1/analyses/{id}` - Update analysis
+- `DELETE /api/v1/analyses/{id}` - Delete analysis
+
+## Security
+
+- All data endpoints require authentication
+- Demo mode binds to localhost and refuses to start in production
+- Secrets only in environment variables, never in code
+- SQL injection prevention via parameterized queries (SQLAlchemy)
+- Input validation via Pydantic schemas
+- Rate limiting recommended for production (add via reverse proxy)
+
+## Configuration
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `ENVIRONMENT` | `development` or `production` | `development` |
+| `DEBUG` | Enable debug mode | `true` |
+| `SECRET_KEY` | JWT secret (min 32 chars in prod) | `dev-secret...` |
+| `DATABASE_URL` | SQLite database URL | `sqlite+aiosqlite:///./axiom_lens.db` |
+| `OIDC_ENABLED` | Enable OIDC authentication | `true` |
+| `OIDC_ISSUER_URL` | Keycloak issuer URL | `http://localhost:8080/realms/axiom-lens` |
+| `OIDC_CLIENT_ID` | OIDC client ID | `axiom-lens` |
+| `OIDC_CLIENT_SECRET` | OIDC client secret | (required in prod) |
+| `DEMO_MODE` | Enable demo mode (localhost only) | `true` |
+| `CORS_ORIGINS` | Comma-separated CORS origins | `http://localhost:5173,http://localhost:3000` |
+
+## Keycloak Setup
+
+The Docker Compose includes a pre-configured Keycloak realm (`axiom-lens`) with:
+- Client: `axiom-lens` (confidential, PKCE enabled)
+- Roles: `viewer`, `operator`, `admin`
+- Demo user: `demo` / `demo` (roles: viewer, operator)
+
+For production:
+1. Change `KEYCLOAK_ADMIN_PASSWORD` in `.env`
+2. Change `OIDC_CLIENT_SECRET` in `.env` and Keycloak
+3. Configure TLS termination at reverse proxy
+4. Set `KC_HOSTNAME` to your domain
+5. Set `DEMO_MODE=false`
+
+## Backup & Restore
 
 ```bash
-npx -y rea-agents@latest analyze-javascript-application /absolute/path/to/app --json
+# Backup database
+docker compose exec backend cp /app/data/axiom_lens.db /app/data/backup_$(date +%F).db
+
+# Backup Keycloak
+docker compose exec keycloak /opt/keycloak/bin/kc.sh export --dir /opt/keycloak/data/backup --realm axiom-lens
 ```
 
-The result includes modules, imports, Electron boundaries and their evidence.
-Replace the path with your target, such as `"D:/apps/example"` on Windows.
+## Development
 
-To install the `rea` command for regular use:
-
-```bash
-npm install --global rea-agents
-rea --help
+### Project Structure
+```
+axiom-lens-alan-vo/
+├── backend/
+│   ├── app/
+│   │   ├── api/          # API routes
+│   │   ├── core/         # Config, database, security, OIDC
+│   │   ├── models/       # SQLAlchemy models
+│   │   ├── schemas/      # Pydantic schemas
+│   │   └── services/     # Business logic
+│   ├── tests/            # Pytest tests
+│   ├── requirements.txt
+│   └── Dockerfile
+├── frontend/
+│   ├── src/
+│   │   ├── components/   # React components
+│   │   ├── pages/        # Page components
+│   │   ├── api/          # API client
+│   │   ├── auth/         # Authentication
+│   │   ├── types/        # TypeScript types
+│   │   └── test/         # Test setup
+│   ├── package.json
+│   ├── vite.config.ts
+│   └── Dockerfile
+├── keycloak/
+│   └── realm-export.json
+├── compose.yaml
+├── .env.example
+├── portfolio.json
+├── CHANGELOG.md
+└── LICENSE
 ```
 
-For native analysis, configure a provider first. See the
-[CLI and Evidence guide](docs/cli.md) for native commands, provider selection,
-snapshots and scripting.
-
-### Update REA
-
-REA changes quickly, and new releases include frequent bug fixes. Keep your
-installation up to date.
-
-For an npm-installed CLI:
-
-```bash
-rea update
-```
-
-To refresh your agent registrations and skill, run the setup command printed
-by the update.
-
-If you use `npx`, update your agent setup with:
-
-```bash
-npx rea-agents@latest setup
-```
-
-Review the setup changes and restart your agent. For one-off CLI commands,
-use `npx rea-agents@latest` followed by the command.
-
-## How REA works
-
-Your agent calls REA through MCP to inspect the target and trace relevant code.
-REA returns findings with their evidence. The agent uses them to ask follow-up
-questions, explain the behavior, or write and test an implementation.
-CLI commands use the same workflows.
-
-![REA investigation flow: your agent asks about a local target, REA inspects and traces it using analysis tools, and the agent uses the returned code, references and unknowns to explain, implement and test.](website/public/assets/figures/rea-investigation-flow.svg)
-
-[Open the full-size figure](website/public/assets/figures/rea-investigation-flow.svg).
-
-<a id="current-status"></a>
-
-## What you can analyze
-
-REA requires Node.js 22.x (>=22.19), 24.x (>=24.11), or 26+, plus npm.
-Additional tools and host support depend on the target:
-
-| Target                 | What REA returns                                                                     | Requirements and guide                                                                                                                |
-| ---------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Native binaries        | Pseudocode, assembly, strings, symbols, calls and references                         | Hopper, Ghidra or IDA; [native analysis](https://rea.tools/guides/native/)                                                            |
-| Offline ELF layout     | Sections, segments, original symbols/relocations and static mitigation candidates    | Caller-supplied pwntools on Linux x64; [binary diagnostics](docs/binary-diagnostics.md)                                               |
-| EVM bytecode           | Dispatch selectors, byte offsets, inferred arguments and mutability                  | Local raw/hex carrier; [offline EVM guide](docs/evm-bytecode.md)                                                                      |
-| Recorded Linux crashes | Raw notes, every recorded thread's registers/signals and optional mapping candidates | Caller-supplied pwntools; optional GDB/pwndbg; [recorded crashes](docs/recorded-crashes.md)                                           |
-| JavaScript / Electron  | Modules, imports, source maps, routes, IPC and native add-on relationships           | Node.js and npm; [application analysis](https://rea.tools/guides/javascript/)                                                         |
-| Websites               | Page structure, scripts, network observations and requested screenshots              | A Chrome-family browser; [browser analysis](https://rea.tools/guides/browser/)                                                        |
-| Saved network captures | Requests, responses, exposed payloads and source locations                           | HAR; mitmdump on Linux for native mitmproxy captures; [capture guide](docs/web-network-captures.md)                                   |
-| .NET assemblies        | Metadata, CIL instructions, declared native dependencies and build comparisons       | None (static only); [managed-code guide](docs/managed-code-analysis.md)                                                               |
-| Android APKs           | Manifest declarations, classes, decompiled methods and references                    | Headless JADX and a full JDK on Linux/macOS/Windows x64; [Android guide](docs/android-analysis.md)                                    |
-| Firmware               | Regions, extraction results and native-analysis handoffs                             | Binwalk / Unblob on Linux; [firmware guide](docs/firmware-analysis.md)                                                                |
-| Packages and resources | File inventories, digests, plists, Apple bundle anatomy and extracted resources      | [Artifact and JavaScript guide](docs/javascript-artifact-reconstruction.md), [Apple applications](docs/apple-application-analysis.md) |
-| Process behavior       | Terminal output, interactions, exit and filesystem observations, and run comparisons | Linux/macOS with a native PTY; [process capture](docs/process-capture.md)                                                             |
-
-Static JavaScript and .NET inspection read the supplied files without running
-the application. Runtime capture runs or interacts with the selected target
-using your user permissions; each runtime guide describes its effects.
-
-<a id="choosing-a-deep-analysis-provider"></a>
-
-Native formats and host support vary by provider. See
-[Hopper and Ghidra setup](docs/installation.md#hopper), the
-[IDA guide](docs/ida-provider.md), and
-[experimental Windows Ghidra support](docs/windows-ghidra-p0.md).
-Ghidra also supports [16-bit DOS analysis](docs/ghidra-dos.md).
-For large binaries, raise its startup deadline with
-`REA_GHIDRA_STARTUP_TIMEOUT_MS`.
-For provider selection, see the [CLI guide](docs/cli.md#choose-a-provider).
-Check [release availability](docs/installation.md#released-package-and-main)
-for features added since the latest npm release.
-
-## Showcases
-
-[![Illustrations of the DX-Ball sound-pan, Notion clipboard-bridge, and TH04 bullet-ring showcases](docs/assets/rea-showcases.png)](https://rea.tools/showcase/)
-
-### DX-Ball: reconstruct a sound-pan calculation
-
-Follow a sound call into its position-to-pan helper, inspect the instructions,
-and turn incomplete pseudocode into C. The reconstruction passes 3,205
-original-x86 cases and reproduces all 63 compiled function bytes.
-
-[Read the case study](https://rea.tools/showcase/dx-ball/) ·
-[Reconstruction repository](https://github.com/N0zoM1z0/dx-ball)
-
-### Notion: trace the Electron clipboard bridge
-
-Find the renderer's clipboard API, follow it through preload and IPC into the
-main process, and inspect the rich clipboard format.
-
-[Read the case study](https://rea.tools/showcase/notion/)
-
-### TH04: recover a DOS bullet-ring calculation
-
-Inspect the original PC-98 game's 16-bit instructions, recover the fixed and
-aimed angle calculations, and compare the reconstructed C++ with the
-historical compiler output.
-
-[Read the case study](https://rea.tools/showcase/th04/) ·
-[Reconstruction repository](https://github.com/N0zoM1z0/th04)
-
-If you've used REA on something interesting, we'd love to see it. Share your
-case in an [issue](https://github.com/morluto/rea/issues) or a
-[pull request](https://github.com/morluto/rea/pulls), including the target,
-your question, how REA helped, and what you found.
-
-## FAQ
-
-<details>
-<summary><strong>Which agents can use REA?</strong></summary>
-
-Any agent that supports local MCP servers. Setup configures the
-[supported agents](docs/installation.md#supported-agents); other clients can use
-[manual MCP registration](docs/installation.md#mcp-registry).
-
-</details>
-
-<details>
-<summary><strong>Do I need Hopper, Ghidra or IDA?</strong></summary>
-
-Deep native analysis uses one of them. Static JavaScript and .NET inspection
-work without a native analysis engine. Setup can install Hopper after approval;
-Ghidra and IDA use your existing installations. See [provider setup](docs/installation.md#hopper).
-
-</details>
-
-<details>
-<summary><strong>Do I need to start Hopper first?</strong></summary>
-
-REA starts Hopper when an operation needs it. On macOS, a first-run dialog may
-ask you to choose demo mode or activate your license. See
-[Hopper startup and troubleshooting](docs/installation.md#launcher-paths-and-troubleshooting).
-
-</details>
-
-<details>
-<summary><strong>What does installing the skill from skills.sh do?</strong></summary>
-
-The skill supplies investigation instructions for your agent. Use `npx rea-agents setup`
-to register REA's MCP server and install the matching instructions, then restart
-your agent. See [skill-only installation](docs/installation.md#skill-only-installation).
-
-</details>
-
-<details>
-<summary><strong>What code does REA return?</strong></summary>
-
-Native analysis returns pseudocode and assembly. JavaScript/Electron analysis
-recovers modules and their relationships. Your agent uses these findings to
-write and test an implementation; the [showcases](#showcases) give worked examples.
-
-</details>
-
-<details>
-<summary><strong>Does REA upload my app?</strong></summary>
-
-REA analyzes targets locally. Your agent receives the tool results, and its
-model provider has its own data policy.
-
-</details>
-
-<details>
-<summary><strong>What should I do if I hit a bug?</strong></summary>
-
-Update first; a recent release may already fix it.
-
-For an npm-installed CLI:
-
-```bash
-rea update
-```
-
-For agent setup through `npx`:
-
-```bash
-npx rea-agents@latest setup
-```
-
-If you're using an agent, complete the [setup refresh](#update-rea) and restart
-it. Retry the same task. If the problem persists, [open an issue](https://github.com/morluto/rea/issues)
-with your REA version, target type, steps to reproduce and error output.
-
-</details>
-
-## Documentation
-
-Start with the website's [worked guides](https://rea.tools/guides/).
-For exact options, prerequisites and result contracts:
-
-- [Installation and setup](docs/installation.md): agent registration, provider configuration, updates and uninstall.
-- [Readiness and troubleshooting](docs/installation.md#check-readiness-for-your-task): diagnose one agent or analysis engine.
-- [CLI and Evidence](docs/cli.md): commands, provider selection, snapshots, import/export and exit statuses.
-- [MCP contracts](docs/mcp-contracts.md) and [agent prompts](docs/mcp-prompts.md): tool results, sessions and guided investigations.
-- [Tool catalog](docs/mcp-contracts.md#generated-catalog): generated inventory of tools, providers and CLI commands.
-- [Roadmap](docs/roadmap.md): planned work and capability trackers.
-
-Report vulnerabilities through [SECURITY.md](SECURITY.md).
-
-## Star history
-
-🎉 **50,000 GitHub stars — thank you!**
-
-Thanks to everyone using REA, reporting bugs, requesting features, testing builds, and contributing fixes.
-
-<a href="https://www.star-history.com/?repos=morluto%2Frea&amp;type=date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=morluto/rea&amp;type=date&amp;theme=dark&amp;legend=top-left" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=morluto/rea&amp;type=date" />
-    <img alt="REA GitHub star history" src="https://api.star-history.com/chart?repos=morluto/rea&amp;type=date" />
-  </picture>
-</a>
-
-## Disclaimer
-
-REA provides tools for lawful reverse-engineering research, analysis, and reconstruction. You are responsible for obtaining any required authorization and complying with applicable laws. The project does not endorse illegal or unauthorized use.
-
-REA is an open-source software project. We have not issued or endorsed any cryptocurrency or token. Tokens using the REA name are not affiliated with the project.
-
-## Contributing
-
-We'd love your help with REA! [Open an issue](https://github.com/morluto/rea/issues) to
-report a bug or suggest a feature, or [send a pull request](https://github.com/morluto/rea/pulls)
-to improve the code or docs.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and checks,
-[testing](docs/testing.md) for verification lanes, and the
-[architecture map](docs/architecture.mermaid) for the project structure.
-
-## Upstream and Improvements
-
-**Axiom Lens** is an owned derivative of REA (<https://github.com/morluto/rea>) (MIT license). The upstream project is authored and maintained by the REA contributors at <https://github.com/morluto/rea>. All original copyright notices, LICENSE, and third-party notices are preserved exactly.
-
-**Maintainer:** Alan Vo \<alanvo@gmail.com\>
-
-This repository is **not** an upstream contribution and does not submit PRs to morluto/rea.
-
-### Improvements over upstream baseline (33b9b31)
-
-| Change | Source issue |
-|--------|-------------|
-| **Fix `inspect_web_page` rejecting every target on Chromium 150** — Chromium 150 reports the opaque placeholder `":"` from `Page.getFrameTree` for a committed same-origin page, causing the origin allowlist check to fail and throwing `target_not_allowed` for every allowed target. Added `isUninformativeFrameUrl()` to detect opaque/placeholder frame-tree URLs and fall back to the authoritative URL from the HTTP `/json/list` endpoint (`context.target.url`) in `CdpWebMcpDiscovery` and the `assertStableAuthorizedFrame` final gate. Per the issue, the URL from the target/endpoint layer is still accurate; the opaque placeholder is treated as unknown-not-disallowed rather than rejected. | morluto/rea#1384 (<https://github.com/morluto/rea/issues/1384>) |
-
-**What differs from upstream:** upstream throws `target_not_allowed` for every target observed through Chromium 150 (verified in the issue). Axiom Lens recovers the authoritative URL from the HTTP endpoint record and proceeds with observation. A real disallowed HTTP/HTTPS URL still rejects immediately; only genuinely uninformative placeholders trigger recovery.
+### Adding a New Analysis Workflow
+1. Add type to `AnalysisType` in `backend/app/schemas/__init__.py` and `frontend/src/types/index.ts`
+2. Create API routes in `backend/app/api/routes/`
+3. Add service logic in `backend/app/services/`
+4. Create UI pages in `frontend/src/pages/`
+5. Update navigation in `frontend/src/components/layout/Navbar.tsx`
 
 ## License
 
-[MIT](LICENSE)
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Author
+
+**Alan Vo** - alanvo@gmail.com - [@ALANDVO](https://github.com/ALANDVO)

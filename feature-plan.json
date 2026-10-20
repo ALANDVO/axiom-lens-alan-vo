@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "current_feature": "core-skeleton",
+  "features": [
+    {
+      "id": "core-skeleton",
+      "title": "Core FastAPI/React skeleton with auth and database",
+      "status": "done",
+      "acceptance": [
+        "FastAPI app runs with SQLite persistence",
+        "React + Vite frontend builds and serves",
+        "OIDC Keycloak authentication with demo mode",
+        "Docker Compose with backend, frontend, Keycloak, and volumes",
+        "Health checks and basic API endpoints work"
+      ],
+      "implementation": [
+        "backend/app/main.py",
+        "backend/app/api/",
+        "backend/app/core/",
+        "backend/app/models/",
+        "backend/app/services/",
+        "backend/requirements.txt",
+        "frontend/package.json",
+        "frontend/src/",
+        "compose.yaml",
+        "backend/Dockerfile",
+        "frontend/Dockerfile"
+      ],
+      "tests": [
+        "backend/tests/test_main.py",
+        "backend/tests/test_auth.py",
+        "frontend/src/test/"
+      ]
+    },
+    {
+      "id": "binary-analysis-workflow",
+      "title": "Binary analysis workflow with AI insights",
+      "status": "planned",
+      "acceptance": [
+        "Upload binary file for analysis",
+        "View pseudocode, strings, symbols, calls",
+        "AI-assisted explanation of functions (opt-in, labeled advisory)",
+        "Export analysis results"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "javascript-analysis-workflow",
+      "title": "JavaScript/Electron application analysis workflow",
+      "status": "planned",
+      "acceptance": [
+        "Analyze JavaScript/Electron app directory or ASAR",
+        "View modules, imports, Electron boundaries",
+        "Trace IPC and native addon relationships",
+        "Export analysis results"
+      ],
+      "implementation": [],
+      "tests": []
+    },
+    {
+      "id": "process-comparison-workflow",
+      "title": "Process behavior comparison workflow",
+      "status": "planned",
+      "acceptance": [
+        "Capture process terminal output and filesystem observations",
+        "Compare two process runs for differences",
+        "Explain content, exit outcome, and temporal differences",
+        "Export comparison results"
+      ],
+      "implementation": [],
+      "tests": []
+    }
+  ]
+}
