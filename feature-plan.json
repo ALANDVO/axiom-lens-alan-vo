@@ -35,15 +35,23 @@
     {
       "id": "binary-analysis-workflow",
       "title": "Binary analysis workflow with AI insights",
-      "status": "planned",
+      "status": "in_progress",
       "acceptance": [
-        "Upload binary file for analysis",
+        "Upload binary file for analysis ✓",
         "View pseudocode, strings, symbols, calls",
         "AI-assisted explanation of functions (opt-in, labeled advisory)",
         "Export analysis results"
       ],
-      "implementation": [],
-      "tests": []
+      "implementation": [
+        "backend/app/api/routes/analyses.py",
+        "backend/app/services/analysis_service.py",
+        "backend/app/schemas/__init__.py",
+        "frontend/src/api/client.ts",
+        "frontend/src/pages/NewAnalysis.tsx"
+      ],
+      "tests": [
+        "backend/tests/test_analyses.py"
+      ]
     },
     {
       "id": "javascript-analysis-workflow",
