@@ -29,9 +29,19 @@ export function NewAnalysis() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [targetPath, setTargetPath] = useState('');
+  const [file, setFile] = useState<File | null>(null);
 
   const createMutation = useMutation({
     mutationFn: (data: AnalysisCreate) => api.createAnalysis(data),
+    onSuccess: (analysis) => {
+      queryClient.invalidateQueries({ queryKey: ['analyses'] });
+      navigate(`/analyses/${analysis.id}`);
+    },
+  });
+
+  const createWithUploadMutation = useMutation({
+    mutationFn: ({ file, type, name, description }: { file: File; type: string; name: string; description?: string }) =>
+      api.createAnalysisWithUpload(file, type as 'binary' | 'javascript' | 'process', name, description),
     onSuccess: (analysis) => {
       queryClient.invalidateQueries({ queryKey: ['analyses'] });
       navigate(`/analyses/${analysis.id}`);
@@ -42,12 +52,29 @@ export function NewAnalysis() {
     e.preventDefault();
     if (!name.trim()) return;
     
-    createMutation.mutate({
-      type,
-      name: name.trim(),
-      description: description.trim() || undefined,
-      target_path: targetPath.trim() || undefined,
-    });
+    if (file) {
+      createWithUploadMutation.mutate({
+        file,
+        type,
+        name: name.trim(),
+        description: description.trim() || undefined,
+      });
+    } else {
+      createMutation.mutate({
+        type,
+        name: name.trim(),
+        description: description.trim() || undefined,
+        target_path: targetPath.trim() || undefined,
+      });
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      // Optionally set targetPath to the file name for display
+      setTargetPath(e.target.files[0].name);
+    }
   };
 
   const config = TYPE_CONFIG[type];
@@ -146,27 +173,47 @@ export function NewAnalysis() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
-              <Input
-                label="Target Path (optional)"
-                placeholder={type === 'binary' ? '/path/to/binary' : type === 'javascript' ? '/path/to/app.or.asar' : '/path/to/executable'}
-                value={targetPath}
-                onChange={(e) => setTargetPath(e.target.value)}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Upload File (optional)
+              </label>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                accept={type === 'binary' ? '.exe,.bin,.elf,.so,.dll,.dylib,.mach-o' : type === 'javascript' ? '.js,.ts,.asar,.json' : '.exe,.bin'}
               />
-              <div className="flex gap-4 pt-4">
-                <Button type="submit" disabled={createMutation.isPending || !name.trim()}>
-                  {createMutation.isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    'Create Analysis'
-                  )}
-                </Button>
-                <Button type="button" variant="secondary" onClick={() => navigate('/analyses')}>
-                  Cancel
-                </Button>
-              </div>
+              {file && (
+                <p className="mt-1 text-sm text-gray-500">Selected: {file.name} ({Math.round(file.size / 1024)} KB)</p>
+              )}
+              <p className="mt-1 text-xs text-gray-400">
+                Or enter a path manually below
+              </p>
+            </div>
+            <Input
+              label="Target Path (optional)"
+              placeholder={type === 'binary' ? '/path/to/binary' : type === 'javascript' ? '/path/to/app.or.asar' : '/path/to/executable'}
+              value={targetPath}
+              onChange={(e) => setTargetPath(e.target.value)}
+            />
+            <div className="flex gap-4 pt-4">
+              <Button
+                type="submit"
+                disabled={(createMutation.isPending || createWithUploadMutation.isPending) || !name.trim()}
+              >
+                {(createMutation.isPending || createWithUploadMutation.isPending) ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  'Create Analysis'
+                )}
+              </Button>
+              <Button type="button" variant="secondary" onClick={() => navigate('/analyses')}>
+                Cancel
+              </Button>
+            </div>
             </form>
           </CardContent>
         </Card>

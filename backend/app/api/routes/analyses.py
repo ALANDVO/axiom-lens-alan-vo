@@ -3,7 +3,7 @@ Axiom Lens - Analysis API routes.
 """
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db_session
@@ -31,6 +31,23 @@ async def create_analysis(
     """Create a new analysis."""
     service = AnalysisService(db)
     analysis = await service.create_analysis(current_user_id, analysis_in)
+    return analysis
+
+
+@router.post("/upload", response_model=AnalysisResponse, status_code=201)
+async def create_analysis_with_upload(
+    file: UploadFile = File(...),
+    type: str = File(...),
+    name: str = File(...),
+    description: Optional[str] = File(None),
+    current_user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
+    """Create a new analysis with file upload."""
+    from app.schemas import AnalysisCreate
+    analysis_in = AnalysisCreate(type=type, name=name, description=description)
+    service = AnalysisService(db)
+    analysis = await service.create_analysis_with_upload(current_user_id, analysis_in, file)
     return analysis
 
 

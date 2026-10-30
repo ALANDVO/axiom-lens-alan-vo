@@ -116,6 +116,25 @@ class ApiClient {
     return response.data;
   }
 
+  async createAnalysisWithUpload(
+    file: File,
+    type: 'binary' | 'javascript' | 'process',
+    name: string,
+    description?: string
+  ): Promise<Analysis> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+    formData.append('name', name);
+    if (description) {
+      formData.append('description', description);
+    }
+    const response = await this.client.post<Analysis>('/analyses/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  }
+
   async listAnalyses(params?: {
     page?: number;
     page_size?: number;

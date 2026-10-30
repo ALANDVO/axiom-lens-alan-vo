@@ -261,3 +261,48 @@ async def test_user_isolation(client: AsyncClient, db_session: AsyncSession):
     data = response.json()
     assert data["total"] == 1
     assert data["items"][0]["name"] == "User 1 Analysis"
+@pytest.mark.asyncio
+async def test_create_analysis_with_upload(client: AsyncClient, db_session: AsyncSession):
+    """Test creating an analysis with file upload."""
+    # Create a user
+    user = User(
+        oidc_sub="test-user-upload",
+        email="test-upload@example.com",
+        name="Test User Upload",
+        roles=["operator"],
+    )
+    db_session.add(user)
+    await db_session.commit()
+    
+    # Create token
+    token = create_access_token(
+        subject=user.oidc_sub,
+        email=user.email,
+        name=user.name,
+        roles=user.roles,
+    )
+    
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    # Create a test file
+    file_content = b"ELF test binary content"
+    files = {
+        "file": ("test_binary", file_content, "application/octet-stream"),
+        "type": (None, "binary"),
+        "name": (None, "Uploaded Binary Analysis"),
+        "description": (None, "Analysis of uploaded binary"),
+    }
+    
+    response = await client.post(
+        "/api/v1/analyses/upload",
+        files=files,
+        headers=headers,
+    )
+    assert response.status_code == 201
+    data = response.json()
+    assert data["name"] == "Uploaded Binary Analysis"
+    assert data["type"] == "binary"
+    assert data["status"] == "pending"
+    assert data["user_id"] == user.oidc_sub
+    assert data["target_hash"] is not None
+    assert data["target_path"] is not None

@@ -25,13 +25,17 @@ Tests: `backend/tests/test_main.py`, `backend/tests/test_auth.py`, `frontend/src
 
 ### binary-analysis-workflow — Binary analysis workflow with AI insights
 
-Status: planned
+Status: in_progress
 
 Acceptance:
-- Upload binary file for analysis
+- Upload binary file for analysis ✓
 - View pseudocode, strings, symbols, calls
 - AI-assisted explanation of functions (opt-in, labeled advisory)
 - Export analysis results
+
+Implementation: `backend/app/api/routes/analyses.py`, `backend/app/services/analysis_service.py`, `backend/app/schemas/__init__.py`, `frontend/src/api/client.ts`, `frontend/src/pages/NewAnalysis.tsx`
+
+Tests: `backend/tests/test_analyses.py`
 
 ### javascript-analysis-workflow — JavaScript/Electron application analysis workflow
 
