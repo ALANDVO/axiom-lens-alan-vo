@@ -4,19 +4,12 @@ Axiom Lens - Analysis service for managing analysis records.
 from datetime import datetime, UTC
 from typing import Optional, Sequence
 from uuid import uuid4
-import hashlib
-import os
-from pathlib import Path
 
 from sqlalchemy import select, func, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Analysis, AuditLog
 from app.schemas import AnalysisCreate, AnalysisUpdate, PaginationParams
-
-
-UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", "/var/lib/axiom-lens/uploads"))
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class AnalysisService:
@@ -40,52 +33,6 @@ class AnalysisService:
             description=analysis_in.description,
             target_path=analysis_in.target_path,
             target_hash=target_hash,
-            status="pending",
-        )
-        self.db.add(analysis)
-        await self.db.commit()
-        await self.db.refresh(analysis)
-        return analysis
-
-    async def save_uploaded_file(
-        self,
-        file,
-        user_id: str,
-    ) -> tuple[str, str]:
-        """Save uploaded file and return (file_path, file_hash)."""
-        content = await file.read()
-        file_hash = hashlib.sha256(content).hexdigest()
-        
-        # Create user-specific upload directory
-        user_dir = UPLOAD_DIR / user_id
-        user_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Save file with hash as filename to avoid conflicts
-        file_ext = Path(file.filename).suffix if file.filename else ""
-        file_path = user_dir / f"{file_hash}{file_ext}"
-        
-        with open(file_path, "wb") as f:
-            f.write(content)
-        
-        return str(file_path), file_hash
-    
-    async def create_analysis_with_upload(
-        self,
-        user_id: str,
-        analysis_in: AnalysisCreate,
-        file,
-    ) -> Analysis:
-        """Create a new analysis record with uploaded file."""
-        file_path, file_hash = await self.save_uploaded_file(file, user_id)
-        
-        analysis = Analysis(
-            id=str(uuid4()),
-            user_id=user_id,
-            type=analysis_in.type,
-            name=analysis_in.name,
-            description=analysis_in.description,
-            target_path=file_path,
-            target_hash=file_hash,
             status="pending",
         )
         self.db.add(analysis)
@@ -119,6 +66,7 @@ class AnalysisService:
         params: PaginationParams,
         type_filter: Optional[str] = None,
         status_filter: Optional[str] = None,
+        search: Optional[str] = None,
     ) -> tuple[Sequence[Analysis], int]:
         """List analyses with pagination and filters."""
         query = select(Analysis).where(Analysis.user_id == user_id)
@@ -127,7 +75,11 @@ class AnalysisService:
             query = query.where(Analysis.type == type_filter)
         if status_filter:
             query = query.where(Analysis.status == status_filter)
-        
+        if search:
+            search_term = f"%{search}%"
+            query = query.where(
+                (Analysis.name.ilike(search_term)) | (Analysis.description.ilike(search_term))
+            )
         # Count total
         count_query = select(func.count()).select_from(query.subquery())
         total = await self.db.scalar(count_query) or 0

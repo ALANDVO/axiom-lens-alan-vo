@@ -45,11 +45,13 @@ export function Analyses() {
   useEffect(() => {
     const type = searchParams.get('type') as AnalysisType | '' || '';
     const status = searchParams.get('status') as AnalysisStatus | '' || '';
+    const search = searchParams.get('search') || '';
     setTypeFilter(type);
     setStatusFilter(status);
+    setSearchQuery(search);
   }, [searchParams]);
 
-  const updateFilters = (newFilters: Partial<{ type: AnalysisType | ''; status: AnalysisStatus | '' }>) => {
+  const updateFilters = (newFilters: Partial<{ type: AnalysisType | ''; status: AnalysisStatus | ''; search: string }>) => {
     const params = new URLSearchParams(searchParams);
     if (newFilters.type !== undefined) {
       if (newFilters.type) params.set('type', newFilters.type);
@@ -59,6 +61,10 @@ export function Analyses() {
       if (newFilters.status) params.set('status', newFilters.status);
       else params.delete('status');
     }
+    if (newFilters.search !== undefined) {
+      if (newFilters.search) params.set('search', newFilters.search);
+      else params.delete('search');
+    }
     params.set('page', '1');
     setSearchParams(params);
     setPage(1);
@@ -66,7 +72,7 @@ export function Analyses() {
 
   const { data: analysesData, isLoading, error, refetch } = useQuery<AnalysisListResponse>({
     queryKey: ['analyses', page, searchQuery, typeFilter, statusFilter],
-    queryFn: () => api.listAnalyses({ page, page_size: pageSize, type_filter: typeFilter, status_filter: statusFilter }),
+    queryFn: () => api.listAnalyses({ page, page_size: pageSize, type_filter: typeFilter, status_filter: statusFilter, search: searchQuery || undefined }),
     enabled: isAuthenticated,
     placeholderData: (previousData: AnalysisListResponse | undefined) => previousData,
   });
@@ -91,12 +97,16 @@ export function Analyses() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setPage(1);
     const params = new URLSearchParams(searchParams);
     if (searchQuery) params.set('search', searchQuery);
     else params.delete('search');
+    if (typeFilter) params.set('type', typeFilter);
+    else params.delete('type');
+    if (statusFilter) params.set('status', statusFilter);
+    else params.delete('status');
     params.set('page', '1');
     setSearchParams(params);
+    setPage(1);
   };
 
   if (authLoading) {
@@ -181,7 +191,7 @@ export function Analyses() {
                 setSearchQuery('');
                 setTypeFilter('');
                 setStatusFilter('');
-                updateFilters({ type: '', status: '' });
+                updateFilters({ type: '', status: '', search: '' });
               }}>
                 <RefreshCw className="h-4 w-4" />
                 Clear

@@ -2,11 +2,14 @@
 Axiom Lens - Analysis API routes.
 """
 from typing import Optional
+import hashlib
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db_session
+from app.core.config import settings
 from app.schemas import (
     AnalysisCreate,
     AnalysisUpdate,
@@ -22,6 +25,21 @@ from app.services.analysis_service import AnalysisService
 router = APIRouter(prefix="/analyses", tags=["analyses"])
 
 
+UPLOAD_DIR = Path(settings.database_url.replace("sqlite+aiosqlite:///", "")).parent / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+
+async def compute_file_hash(file: UploadFile) -> tuple[str, Path]:
+    """Compute SHA256 hash of uploaded file and save it."""
+    hasher = hashlib.sha256()
+    file_path = UPLOAD_DIR / file.filename
+    content = await file.read()
+    hasher.update(content)
+    file_path.write_bytes(content)
+    await file.seek(0)
+    return hasher.hexdigest(), file_path
+
+
 @router.post("", response_model=AnalysisResponse, status_code=201)
 async def create_analysis(
     analysis_in: AnalysisCreate,
@@ -35,19 +53,35 @@ async def create_analysis(
 
 
 @router.post("/upload", response_model=AnalysisResponse, status_code=201)
-async def create_analysis_with_upload(
+async def upload_binary(
     file: UploadFile = File(...),
-    type: str = File(...),
-    name: str = File(...),
-    description: Optional[str] = File(None),
+    name: Optional[str] = None,
+    description: Optional[str] = None,
     current_user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
-    """Create a new analysis with file upload."""
-    from app.schemas import AnalysisCreate
-    analysis_in = AnalysisCreate(type=type, name=name, description=description)
+    """Upload a binary file for analysis."""
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No filename provided")
+    
+    # Compute hash and save file
+    target_hash, file_path = await compute_file_hash(file)
+    
+    # Check if analysis already exists for this hash
     service = AnalysisService(db)
-    analysis = await service.create_analysis_with_upload(current_user_id, analysis_in, file)
+    existing = await service.get_analysis_by_hash(target_hash, current_user_id)
+    if existing:
+        return existing
+    
+    # Create analysis record
+    analysis_name = name or file.filename
+    analysis_in = AnalysisCreate(
+        type="binary",
+        name=analysis_name,
+        description=description,
+        target_path=str(file_path),
+    )
+    analysis = await service.create_analysis(current_user_id, analysis_in, target_hash=target_hash)
     return analysis
 
 
@@ -55,8 +89,9 @@ async def create_analysis_with_upload(
 async def list_analyses(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
-    type_filter: Optional[str] = Query(None, pattern="^(binary|javascript|process)$"),
-    status_filter: Optional[str] = Query(None, pattern="^(pending|running|completed|failed)$"),
+    type_filter: Optional[str] = Query(None, alias="type"),
+    status_filter: Optional[str] = Query(None, alias="status"),
+    search: Optional[str] = Query(None, alias="search"),
     current_user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
@@ -64,15 +99,19 @@ async def list_analyses(
     service = AnalysisService(db)
     params = PaginationParams(page=page, page_size=page_size)
     items, total = await service.list_analyses(
-        current_user_id, params, type_filter, status_filter
+        current_user_id,
+        params,
+        type_filter=type_filter,
+        status_filter=status_filter,
+        search=search,
     )
-    
+    total_pages = (total + page_size - 1) // page_size
     return AnalysisListResponse(
         items=items,
         total=total,
         page=page,
         page_size=page_size,
-        total_pages=(total + page_size - 1) // page_size,
+        total_pages=total_pages,
     )
 
 

@@ -1,19 +1,17 @@
 # Changelog
 
-## 1.2.0 — work-in-progress checkpoint
+## 1.3.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+## 1.1.1 — Fix analysis filter query parameter
+
+### Fixed
+- Correct query parameter name for status filter in analysis list API (was `status_filter`, now `status` to match route alias)
+- Fix failing test `test_list_analyses_filters` that used incorrect parameter name
+
 
 ## 1.1.0 — work-in-progress checkpoint
-
-Partial code published for continued development. Known issues: STATUS.md.
-
-### Added
-- File upload endpoint for binary, JavaScript, and process analysis (POST /api/v1/analyses/upload)
-- File storage with SHA256 hash-based deduplication per user
-- Frontend file input with type-specific accept filters
-- API client method for multipart file upload
-
 # Axiom Lens - Changelog
 
 All notable changes to this project will be documented in this file.
