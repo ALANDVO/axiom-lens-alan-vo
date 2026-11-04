@@ -2,11 +2,11 @@
 
 Work in progress; not a release-readiness or successful QA claim.
 
-Version: 1.2.0
+Version: 1.3.0
 
 ## Outstanding findings
 
-No new checkpoint changes after bounded retry; defer this target after repeated failures
+Repair this preserved checkpoint. Previous failure: Oversized snapshot file: .turbo/turbo-lint.log
 
 ## Next round
 

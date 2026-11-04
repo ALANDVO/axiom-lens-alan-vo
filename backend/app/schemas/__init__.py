@@ -4,7 +4,6 @@ Axiom Lens - Pydantic schemas for request/response validation.
 from datetime import datetime
 from typing import Optional, Any
 from uuid import UUID
-import hashlib
 
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 
@@ -62,7 +61,6 @@ class AnalysisBase(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     description: Optional[str] = None
     target_path: Optional[str] = None
-    target_hash: Optional[str] = None
 
 
 class AnalysisCreate(AnalysisBase):
@@ -77,6 +75,7 @@ class AnalysisUpdate(BaseModel):
     status: Optional[str] = Field(None, pattern="^(pending|running|completed|failed)$")
     result: Optional[dict] = None
     error: Optional[str] = None
+
 
 class AnalysisResponse(AnalysisBase):
     """Analysis response."""

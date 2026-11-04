@@ -25,32 +25,23 @@ class ApiClient {
   constructor() {
     this.client = axios.create({
       baseURL: API_BASE_URL,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      withCredentials: true, // For session cookies
+      withCredentials: true,
     });
 
-    // Request interceptor to add auth token
-    this.client.interceptors.request.use(
-      (config: InternalAxiosRequestConfig) => {
-        if (this.accessToken) {
-          config.headers.Authorization = `Bearer ${this.accessToken}`;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
+    this.client.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+      if (this.accessToken) {
+        config.headers.Authorization = `Bearer ${this.accessToken}`;
+      }
+      return config;
+    });
 
-    // Response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
-      (error: AxiosError<ErrorResponse>) => {
+      async (error: AxiosError) => {
         if (error.response?.status === 401) {
           this.clearToken();
-          // Redirect to login if not already there
-          if (window.location.pathname !== '/login') {
-            window.location.href = '/login';
+          if (!window.location.pathname.startsWith('/auth')) {
+            window.location.href = '/auth/login';
           }
         }
         return Promise.reject(error);
@@ -60,23 +51,14 @@ class ApiClient {
 
   setToken(token: string | null) {
     this.accessToken = token;
-    if (token) {
-      localStorage.setItem('access_token', token);
-    } else {
-      localStorage.removeItem('access_token');
-    }
   }
 
   getToken(): string | null {
-    if (!this.accessToken) {
-      this.accessToken = localStorage.getItem('access_token');
-    }
     return this.accessToken;
   }
 
   clearToken() {
     this.accessToken = null;
-    localStorage.removeItem('access_token');
   }
 
   isAuthenticated(): boolean {
@@ -100,9 +82,8 @@ class ApiClient {
     return response.data;
   }
 
-
   async getDemoToken(): Promise<TokenResponse> {
-    const response = await this.client.post<TokenResponse>('/auth/demo-token');
+    const response = await this.client.post<TokenResponse>('/auth/demo');
     return response.data;
   }
 
@@ -116,21 +97,14 @@ class ApiClient {
     return response.data;
   }
 
-  async createAnalysisWithUpload(
-    file: File,
-    type: 'binary' | 'javascript' | 'process',
-    name: string,
-    description?: string
-  ): Promise<Analysis> {
+  async uploadBinary(file: File, name?: string, description?: string): Promise<Analysis> {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('type', type);
-    formData.append('name', name);
-    if (description) {
-      formData.append('description', description);
-    }
+    if (name) formData.append('name', name);
+    if (description) formData.append('description', description);
+    
     const response = await this.client.post<Analysis>('/analyses/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: { 'Content-Type': 'multipart/form-data' }
     });
     return response.data;
   }
@@ -140,6 +114,7 @@ class ApiClient {
     page_size?: number;
     type_filter?: string;
     status_filter?: string;
+    search?: string;
   }): Promise<AnalysisListResponse> {
     const response = await this.client.get<AnalysisListResponse>('/analyses', { params });
     return response.data;
