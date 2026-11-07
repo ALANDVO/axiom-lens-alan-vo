@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-core-skeleton
+binary-analysis-basic
 
 ## Roadmap
 
@@ -22,6 +22,22 @@ Acceptance:
 Implementation: `backend/app/main.py`, `backend/app/api/`, `backend/app/core/`, `backend/app/models/`, `backend/app/services/`, `backend/requirements.txt`, `frontend/package.json`, `frontend/src/`, `compose.yaml`, `backend/Dockerfile`, `frontend/Dockerfile`
 
 Tests: `backend/tests/test_main.py`, `backend/tests/test_auth.py`, `frontend/src/test/`
+
+### binary-analysis-basic — Basic binary file analysis (metadata, strings, ELF/PE/Mach-O info)
+
+Status: done
+
+Acceptance:
+- Upload binary file for analysis via POST /api/v1/analyses/upload
+- Automatic background analysis with status tracking (pending -> running -> completed/failed)
+- Extract file info (size, type, hash), strings, and format-specific metadata (ELF header, sections, symbols)
+- Trigger analysis on existing records via POST /api/v1/analyses/{id}/analyze
+- Results stored in analysis.result JSON field and viewable via GET /api/v1/analyses/{id}
+- Export results as JSON from frontend
+
+Implementation: `backend/app/services/binary_analyzer.py`, `backend/app/api/routes/analyses.py`, `backend/requirements.txt`
+
+Tests: `backend/tests/test_analyses.py`
 
 ### binary-analysis-workflow — Binary analysis workflow with AI insights
 

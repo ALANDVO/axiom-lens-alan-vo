@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "current_feature": "core-skeleton",
+  "current_feature": "binary-analysis-basic",
   "features": [
     {
       "id": "core-skeleton",
@@ -30,6 +30,27 @@
         "backend/tests/test_main.py",
         "backend/tests/test_auth.py",
         "frontend/src/test/"
+      ]
+    },
+    {
+      "id": "binary-analysis-basic",
+      "title": "Basic binary file analysis (metadata, strings, ELF/PE/Mach-O info)",
+      "status": "done",
+      "acceptance": [
+        "Upload binary file for analysis via POST /api/v1/analyses/upload",
+        "Automatic background analysis with status tracking (pending -> running -> completed/failed)",
+        "Extract file info (size, type, hash), strings, and format-specific metadata (ELF header, sections, symbols)",
+        "Trigger analysis on existing records via POST /api/v1/analyses/{id}/analyze",
+        "Results stored in analysis.result JSON field and viewable via GET /api/v1/analyses/{id}",
+        "Export results as JSON from frontend"
+      ],
+      "implementation": [
+        "backend/app/services/binary_analyzer.py",
+        "backend/app/api/routes/analyses.py",
+        "backend/requirements.txt"
+      ],
+      "tests": [
+        "backend/tests/test_analyses.py"
       ]
     },
     {

@@ -5,7 +5,7 @@ from typing import Optional
 import hashlib
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db_session
@@ -20,6 +20,7 @@ from app.schemas import (
 )
 from app.api.dependencies import get_current_user_id, get_db
 from app.services.analysis_service import AnalysisService
+from app.services.binary_analyzer import analyze_binary
 
 
 router = APIRouter(prefix="/analyses", tags=["analyses"])
@@ -40,6 +41,37 @@ async def compute_file_hash(file: UploadFile) -> tuple[str, Path]:
     return hasher.hexdigest(), file_path
 
 
+async def run_binary_analysis(analysis_id: str, file_path: Path, user_id: str, db_factory) -> None:
+    """Background task to run binary analysis and update results."""
+    try:
+        # Analyze the binary
+        results = analyze_binary(file_path)
+        
+        # Update analysis with results
+        async with db_factory() as db:
+            service = AnalysisService(db)
+            await service.update_analysis(
+                analysis_id,
+                user_id,
+                AnalysisUpdate(
+                    status="completed",
+                    result=results,
+                )
+            )
+    except Exception as e:
+        # Update analysis with error
+        async with db_factory() as db:
+            service = AnalysisService(db)
+            await service.update_analysis(
+                analysis_id,
+                user_id,
+                AnalysisUpdate(
+                    status="failed",
+                    error=str(e),
+                )
+            )
+
+
 @router.post("", response_model=AnalysisResponse, status_code=201)
 async def create_analysis(
     analysis_in: AnalysisCreate,
@@ -54,9 +86,11 @@ async def create_analysis(
 
 @router.post("/upload", response_model=AnalysisResponse, status_code=201)
 async def upload_binary(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     name: Optional[str] = None,
     description: Optional[str] = None,
+    auto_analyze: bool = True,
     current_user_id: str = Depends(get_current_user_id),
     db: AsyncSession = Depends(get_db),
 ):
@@ -82,6 +116,71 @@ async def upload_binary(
         target_path=str(file_path),
     )
     analysis = await service.create_analysis(current_user_id, analysis_in, target_hash=target_hash)
+    
+    # Schedule background analysis if requested
+    if auto_analyze:
+        from app.core.database import AsyncSessionLocal
+        background_tasks.add_task(
+            run_binary_analysis,
+            analysis.id,
+            file_path,
+            current_user_id,
+            AsyncSessionLocal,
+        )
+        # Update status to running
+        await service.update_analysis(
+            analysis.id,
+            current_user_id,
+            AnalysisUpdate(status="running"),
+        )
+        # Refresh to get updated status
+        await db.refresh(analysis)
+    
+    return analysis
+
+
+@router.post("/{analysis_id}/analyze", response_model=AnalysisResponse, status_code=202)
+async def trigger_analysis(
+    background_tasks: BackgroundTasks,
+    analysis_id: str,
+    current_user_id: str = Depends(get_current_user_id),
+    db: AsyncSession = Depends(get_db),
+):
+    """Trigger analysis for an existing analysis record."""
+    service = AnalysisService(db)
+    analysis = await service.get_analysis(analysis_id, current_user_id)
+    if not analysis:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    
+    if analysis.type != "binary":
+        raise HTTPException(status_code=400, detail="Only binary analysis is supported")
+    
+    if not analysis.target_path:
+        raise HTTPException(status_code=400, detail="No target file associated with this analysis")
+    
+    file_path = Path(analysis.target_path)
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Target file not found")
+    
+    # Update status to running
+    await service.update_analysis(
+        analysis_id,
+        current_user_id,
+        AnalysisUpdate(status="running"),
+    )
+    
+    # Schedule background analysis
+    from app.core.database import AsyncSessionLocal
+    background_tasks.add_task(
+        run_binary_analysis,
+        analysis_id,
+        file_path,
+        current_user_id,
+        AsyncSessionLocal,
+    )
+    
+    # Return updated analysis
+    await db.refresh(analysis)
     return analysis
 
 
