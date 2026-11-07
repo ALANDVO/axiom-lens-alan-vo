@@ -12,3 +12,7 @@ The temporary outer-library path was replaced with `/owned/libOuter.dylib`.
 The load-command fields are otherwise unmodified. The capture retains the real
 re-export, ID, and ordinary libSystem dependency. It proves format parsing,
 not Hopper or Ghidra behavior.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

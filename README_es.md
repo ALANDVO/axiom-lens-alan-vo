@@ -281,3 +281,7 @@ Consulta [CONTRIBUTING.md](CONTRIBUTING.md) para preparar el entorno de desarrol
 ## Licencia
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

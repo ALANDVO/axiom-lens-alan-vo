@@ -170,3 +170,7 @@ rewrites, or search the filesystem. It does not replace the older
 `correlate_static_and_runtime` investigation tool: that tool records explicit
 cross-version static/runtime comparison hypotheses, while this operation maps
 JavaScript runtime instances to static application-graph entities.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

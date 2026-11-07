@@ -176,3 +176,7 @@ REA_FIRMWARE_VERIFY_GHIDRA=1 npm run verify:firmware
 `scripts/rea.mjs` to verify the packaged CLI/MCP workflow. Real coverage here is
 generated gzip/USTAR/ext4 with a Linux x64 ELF child; SquashFS, UBIFS, proprietary
 firmware, other hosts and architectures remain unverified.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

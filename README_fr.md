@@ -282,3 +282,7 @@ Consultez [CONTRIBUTING.md](CONTRIBUTING.md) pour l'environnement de développem
 ## Licence
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

@@ -87,3 +87,7 @@ browser, CLI, and stdio MCP. Set `REA_BROWSER_EXECUTABLE` to an installed
 Chrome-family browser. The verifier accepts an optional installed REA entrypoint
 argument for package verification. `npm run verify:browser` additionally covers
 passive `inspect_web_page` export through both public adapters.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

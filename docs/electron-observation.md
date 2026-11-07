@@ -120,3 +120,7 @@ projection is intentionally target-only and partial: it binds the selected
 application path and capture outcome to the static graph, while frames, scripts,
 workers, and execution claims remain unavailable until a separate passive runtime
 capture provides them.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

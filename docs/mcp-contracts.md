@@ -364,3 +364,7 @@ and reconstruction cannot treat it as unchanged.
 canonical `integrity_contradictions` records and marks application graph
 coverage partial when any mismatch is continued. Contradicted nested ASARs
 remain opaque.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

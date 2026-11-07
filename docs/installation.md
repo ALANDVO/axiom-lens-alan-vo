@@ -709,3 +709,7 @@ Persistent registrations should use one exact package version. `rea setup`
 writes the same package-runner shape and pins it to the exact version that
 performed setup. Run current setup to refresh an older registration, then
 restart the client.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

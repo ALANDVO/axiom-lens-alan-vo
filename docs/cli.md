@@ -219,3 +219,7 @@ REA's failure status:
 set -o pipefail
 rea inspect-artifact ./app.asar --json | jq . > inspection.json
 ```
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

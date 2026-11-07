@@ -281,3 +281,7 @@ Die Entwicklungsumgebung und Prüfungen beschreibt [CONTRIBUTING.md](CONTRIBUTIN
 ## Lizenz
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

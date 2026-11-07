@@ -122,3 +122,7 @@ exports the actual response, then checks the original compiler point and exact
 retained content through CLI and stdio MCP. It can target an installed package.
 Only this lane requires Chromium and the fixture compiler. Linux x64 is the real
 workflow covered by the dedicated CI job; other host workflows remain unverified.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

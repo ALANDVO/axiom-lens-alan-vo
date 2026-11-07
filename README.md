@@ -227,3 +227,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Author
 
 **Alan Vo** - alanvo@gmail.com - [@ALANDVO](https://github.com/ALANDVO)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

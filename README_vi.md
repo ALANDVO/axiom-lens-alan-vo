@@ -281,3 +281,7 @@ Xem [CONTRIBUTING.md](CONTRIBUTING.md) về thiết lập môi trường phát t
 ## Giấy phép
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

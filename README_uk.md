@@ -281,3 +281,7 @@ REA надає інструменти для законних досліджен
 ## Ліцензія
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

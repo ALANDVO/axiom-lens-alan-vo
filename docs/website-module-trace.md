@@ -83,3 +83,7 @@ closes only the owned browser; cleanup failure cannot return a successful trace.
 the host requires it; it does not enable an REA security boundary.
 
 See [testing](testing.md) for the native loading oracle and CLI/MCP real lane.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

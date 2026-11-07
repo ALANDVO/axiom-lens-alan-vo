@@ -100,3 +100,7 @@ compiler/linker symbols and raw directory bytes provide the oracle. Stripped
 fixtures exercise heuristic detection. Tests do not execute the resulting
 NativeAOT binaries. Fixture generation and adapter compilation are optional and
 never prerequisites of ordinary native analysis or setup.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

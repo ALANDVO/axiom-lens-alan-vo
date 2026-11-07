@@ -191,3 +191,7 @@ The public domain functions are:
 - `serializeJavaScriptApplicationGraph` for canonical JSON;
 - `computeJavaScriptApplicationGraphSha256` for a byte-stable verified graph
   digest.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

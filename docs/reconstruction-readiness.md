@@ -91,3 +91,7 @@ The verifier uses only source-owned, redistributable fixtures:
 The synthetic example is a public typed input, not a global equivalence claim.
 It demonstrates that every deliberate fault remains represented in the final
 report and that only comparable Evidence can close the associated obligation.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

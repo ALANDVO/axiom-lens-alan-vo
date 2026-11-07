@@ -107,3 +107,7 @@ user, creates private temporary window-station objects, and launches the test
 inside a kill-on-close fixture job. It does not create accounts, modify host
 policy, or change the caller's token. A real-provider claim must additionally
 verify the packaged CLI and MCP on that ordinary-user token.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

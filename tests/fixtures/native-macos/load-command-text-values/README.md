@@ -15,3 +15,7 @@ xcrun otool -l fixture.dylib
 The install name is a text field, including when its first token resembles a
 decimal or hexadecimal number. The captures also retain ordinary byte-range,
 permission, and command-size numeric fields as controls.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

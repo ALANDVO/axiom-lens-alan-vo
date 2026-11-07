@@ -88,3 +88,7 @@ host containment across concurrent callers.
 See [testing.md](testing.md#javascript-source-recovery) for the focused real
 Wakaru CLI/MCP lane and its source-owned compiler fixtures. Other host platforms
 and Bun/Vue recovery are not claimed by this adapter.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

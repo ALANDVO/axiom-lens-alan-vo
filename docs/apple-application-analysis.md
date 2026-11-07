@@ -216,3 +216,7 @@ Reported command values are retained in all cases.
 `verify:macos-bundle` checks the parser against `otool -l` for every traced
 image. It also compares the predicted load order of two process roots with the
 images dyld actually loads (`DYLD_PRINT_LIBRARIES`).
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

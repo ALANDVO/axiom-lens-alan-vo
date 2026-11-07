@@ -329,3 +329,7 @@ Unresolved HTML references retain their declaration, source range, and resolutio
 reason in the renderer observations.
 HTML script source ranges follow the HTML parser across LF, CRLF, and bare CR
 line endings, preserving UTF-16 columns.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

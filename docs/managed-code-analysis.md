@@ -342,3 +342,7 @@ MethodDef flags or implementation flags value differs, including accessibility
 or synchronization changes. This is separate from the CIL/signature matching
 tiers: identical instructions do not establish unchanged method metadata. The
 reported difference is static metadata evidence, not proof of runtime behavior.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

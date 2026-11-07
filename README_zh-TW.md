@@ -283,3 +283,7 @@ REA 為合法的逆向工程研究、分析和重建提供工具。你有責任�
 ## 授權條款
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

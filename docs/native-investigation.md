@@ -443,3 +443,7 @@ Value projection preserves serialized node kinds, IDs, references and pagination
 Exact and ambiguous value counts describe emitted root/object value instances;
 a root and an object may contain the same value. Archive digests identify the
 original bytes.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

@@ -155,3 +155,7 @@ handle nullable targets in custom readers. See
 Keep original saved artifacts until their replacements and consuming workflows
 have been checked. Fresh analysis may establish different facts if the target,
 source tree or runtime changed; it does not rewrite what an older capture proved.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

@@ -281,3 +281,7 @@ Geliştirme ortamı ve kontroller için [CONTRIBUTING.md](CONTRIBUTING.md), doğ
 ## Lisans
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

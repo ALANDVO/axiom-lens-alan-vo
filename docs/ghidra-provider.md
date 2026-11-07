@@ -70,3 +70,7 @@ lane checks DACLs, handle admission, cancellation, and Job Object lifecycle.
 prefix, then checks ordinary-user CLI/MCP operations against canonical contracts.
 All lanes require matching native controls; package startup alone establishes
 only package compatibility.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

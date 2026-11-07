@@ -120,3 +120,7 @@ unverified identifier.
 Suggestions are starting points, not tool calls. A tool acts on the target,
 operation, and lifecycle fields in its own request; selecting a suggestion does
 not execute it or broaden those fields.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

@@ -86,3 +86,7 @@ program; subsequent inspection only reads the resulting core. Real acceptance
 checks recorded threads, high registers, missing/malformed notes, opaque owners,
 CLI/MCP parity, optional debugger context and historical PID collision with an
 owned live sentinel. Original inputs and host configuration remain unchanged.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

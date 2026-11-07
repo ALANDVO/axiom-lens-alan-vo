@@ -885,3 +885,7 @@ npm run evidence:check
 
 The records preserve unsupported and unverified coverage as explicit unknowns.
 Run the matching real-tool prerequisites described in this guide.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

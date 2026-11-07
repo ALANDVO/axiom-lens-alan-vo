@@ -190,3 +190,7 @@ rea annotate-native-function /local/program.com 0x10100 --target-format dos-com 
 ```
 
 The CLI returns the updated analysis before closing its isolated session. MCP edits remain visible to later reads until `close_binary`. Original bytes remain unchanged, database edits are discarded on close, and immutable analysis snapshots are invalidated after edits. This operation does not save a Ghidra project, change ABI/types/body ranges, patch instructions, or emulate a DOS runtime. Windows P0 does not admit it.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

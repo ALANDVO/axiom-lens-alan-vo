@@ -175,3 +175,7 @@ native artifact. Hosted Windows CI verifies native controls and packaged
 startup separately from real Ghidra acceptance. Broader hostile-target,
 concurrently mutable-path, extraction, and IPC-security claims require their
 own acceptance and are not implied by this P0 result.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

@@ -33,3 +33,7 @@ Setup remains additive, reuses existing tools, and requires approval for disclos
 configuration and Hopper installation changes. Additional installer choices need
 an implemented toolchain and explicit scope; setup does not install or upgrade
 unrelated runtimes or dependencies.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

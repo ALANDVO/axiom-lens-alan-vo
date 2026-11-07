@@ -33,3 +33,7 @@ the repository's reconstruction-readiness verifier. `npm run verify:readiness`
 combines them with the compiled native fixtures, exercises CLI and MCP parity
 for real analysis operations, and checks the internal machine-readable report
 documented in `docs/reconstruction-readiness.md`.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

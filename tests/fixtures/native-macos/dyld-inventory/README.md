@@ -41,3 +41,7 @@ captures used to check their respective row formats.
 path (exit 1). `codesign-unsigned.txt` is stderr from the same command on a copy
 of the fixture after `codesign --remove-signature` (exit 1). Only the latter is
 an observation that the artifact is unsigned.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

@@ -151,3 +151,7 @@ Keep new implementation commits on main for the next release. The workflow
 owns packaged-artifact verification, npm publication, the published CLI/MCP
 canary, and MCP Registry publication. Sync manual checkpoint metadata back to
 main after publication; see the guide for recovery and verification.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

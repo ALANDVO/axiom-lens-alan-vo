@@ -148,3 +148,7 @@ assets. Because this provider never reads source bytes, matches normally use a
 unique authorized location and remain weaker than captured-byte identity.
 Builtin `node:` scripts remain runtime-only nodes unless a future explicit
 static authority models them.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

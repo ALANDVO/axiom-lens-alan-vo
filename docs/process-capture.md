@@ -249,3 +249,7 @@ scenarios from the same absolute working directory and observation paths.
 Captures are local Evidence files; keep
 their source artifacts and invocation context available when interpreting a
 difference.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

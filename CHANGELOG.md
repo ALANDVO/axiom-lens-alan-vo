@@ -70,3 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Health checks on all services
 
 Wall time: 0.01 seconds
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

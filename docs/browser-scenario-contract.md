@@ -295,3 +295,7 @@ artifacts carry their normalized before/after digests and capture states.
 Every changed or unknown artifact record is returned inline for each aligned
 step. Missing, truncated, or mismatched capture coverage remains unknown
 instead of being treated as equality.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

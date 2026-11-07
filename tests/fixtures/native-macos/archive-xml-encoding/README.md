@@ -15,3 +15,7 @@ plutil -lint archive.xml little-endian.plist big-endian.plist
 Only the UTF-8 XML source capture is committed. The tests encode its same text
 as UTF-16 so no compiled binaries or binary fixtures are committed. This is
 format/filesystem verification; no archived classes are instantiated by REA.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

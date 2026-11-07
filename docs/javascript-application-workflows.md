@@ -289,3 +289,7 @@ matter, run behavioral probes directly against the relevant application
 versions and capture them through the available browser, Electron, or process
 workflows. Those observations do not prove behavior in an unobserved app
 version or environment.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

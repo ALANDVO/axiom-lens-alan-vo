@@ -29,3 +29,7 @@ bounded, and address-bearing; it never compares their text with Hopper. The
 callback fixture also proves that an unresolved targetless flow is not silently
 promoted to a direct callee. Every target runs in a separate owned project and
 must leave no process, socket, project, or runtime root after close.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

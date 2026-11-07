@@ -12,3 +12,7 @@ Only the temporary fixture path was replaced with `/owned/fixture`; tool fields
 are unchanged. The first output contains load commands without a Mach header.
 The second contains the real numeric header followed by those same commands.
 These are format regression captures, not Hopper or Ghidra runtime proof.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

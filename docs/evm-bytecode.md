@@ -82,3 +82,7 @@ The real verification lane traces representative raw/hex CLI workflows and check
 that only declared Node/prlimit launchers and process ownership inspection run.
 Socket traces permit local stdio socket pairs and reject attempted network requests.
 These observations verify those fixtures; they are not a general network sandbox.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

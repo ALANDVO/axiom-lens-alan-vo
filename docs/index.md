@@ -44,3 +44,7 @@ npx -y rea-agents@latest analyze-javascript-application /absolute/path/to/app --
 See [installation and setup](./installation.md) for requirements and configuration.
 
 ![REA inspecting a native binary in Hopper](./assets/rea-hopper-analysis.png)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

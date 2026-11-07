@@ -283,3 +283,7 @@ npx rea-agents@latest setup
 ## الترخيص
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

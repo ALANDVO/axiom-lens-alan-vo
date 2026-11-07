@@ -66,3 +66,7 @@ for review; whitespace is not a wire identity claim. No provider was launched.
 The decoder expectation separately specifies every field path, JSON value and
 observed-versus-inferred status. It is a captured decoder regression, not proof
 of a live protocol-capture product workflow.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

@@ -281,3 +281,7 @@ REA มีเครื่องมือสำหรับการวิจั�
 ## สัญญาอนุญาต
 
 [MIT](LICENSE)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

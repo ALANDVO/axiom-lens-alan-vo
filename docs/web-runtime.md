@@ -61,3 +61,7 @@ Primary protocol references: [Profiler and Debugger](https://raw.githubuserconte
 Source ownership requires both the selected main frame and producer evidence for its default execution world. Extension/automation isolated worlds, worker worlds and unknown worlds cannot establish website source joins. Contradictory world metadata stays unowned. Referenced source records retain the reported execution context and script auxiliary context metadata; source text is read only for proven main-document default worlds.
 
 Known script/context identities are monitored through asynchronous source completion after the sample cutoff. A changed identity excludes its retained text, frame attribution, coverage and request/source joins. Chromium's specific native CSS syntax rejection returns an input error for `selector`, including the selected target; unrelated node, command and transport failures retain their original category.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

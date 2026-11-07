@@ -417,3 +417,7 @@ synchronized production releases.
 Local development does not change Pages settings or run the deployment workflow.
 Any environment protection rules are configured separately when publication is
 approved.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

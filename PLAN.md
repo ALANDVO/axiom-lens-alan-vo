@@ -69,3 +69,6 @@ Acceptance:
 - Explain content, exit outcome, and temporal differences
 - Export comparison results
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

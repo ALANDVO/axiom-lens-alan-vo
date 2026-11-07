@@ -85,3 +85,7 @@ tasks on the intended host. Record host/model/catalog, selected tools, arguments
 errors, retries, and task outcomes. Schema validity and keyword heuristics do not
 establish successful tool selection. See [mcp-contracts.md](mcp-contracts.md) for
 shipped runtime behavior.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

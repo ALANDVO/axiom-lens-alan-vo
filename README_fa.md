@@ -262,3 +262,7 @@ REA ابزارهایی برای پژوهش، تحلیل و بازسازی قان
 [MIT](LICENSE)
 
 </div>
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

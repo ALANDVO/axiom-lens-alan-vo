@@ -136,3 +136,7 @@ malformed limit reports remain unknown with their read failure preserved. A
 received signal alone does not establish its exact cause. Dynamic tags require
 a complete DT_NULL inside PT_DYNAMIC; interpreter names and ranges end at the
 first NUL, with any padding still represented by the original segment range.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

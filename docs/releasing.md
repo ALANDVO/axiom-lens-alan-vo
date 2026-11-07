@@ -211,3 +211,7 @@ tag. Do not dispatch a fresh publish phase to repair an already-created
 release: Release Please will not create the same release again. Do not move
 the tag, delete the release, or unpublish npm as a retry. A defective public
 package requires a reviewed correction and a new version.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

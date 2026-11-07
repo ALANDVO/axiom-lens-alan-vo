@@ -239,3 +239,7 @@ refuses to overwrite a different existing file. APK/JAR files live under ignored
 `_reference/` and are excluded from package contents. The lane exercises actual
 REA CLI and MCP results with the real engine, separately from synthetic protocol
 regressions. It needs no Gradle build, emulator, Android SDK or Ghidra.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
