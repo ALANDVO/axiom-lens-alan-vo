@@ -284,4 +284,4 @@ Xem [CONTRIBUTING.md](CONTRIBUTING.md) về thiết lập môi trường phát t
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

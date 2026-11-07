@@ -286,4 +286,4 @@ REA 为合法的逆向工程研究、分析和重建提供工具。你有责任�
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

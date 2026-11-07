@@ -112,4 +112,4 @@ The initial real workflows use stdio registrations for the legacy Windows GUI pr
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

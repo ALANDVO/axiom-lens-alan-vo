@@ -110,4 +110,4 @@ verify the packaged CLI and MCP on that ordinary-user token.
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

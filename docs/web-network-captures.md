@@ -157,4 +157,4 @@ MCP advertises the same strict named input contract used by the application. His
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

@@ -285,4 +285,4 @@ Consultez [CONTRIBUTING.md](CONTRIBUTING.md) pour l'environnement de développem
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

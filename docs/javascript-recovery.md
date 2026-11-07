@@ -91,4 +91,4 @@ and Bun/Vue recovery are not claimed by this adapter.
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

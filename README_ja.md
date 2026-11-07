@@ -286,4 +286,4 @@ REA への貢献を歓迎します！[issue を作成](https://github.com/morlut
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

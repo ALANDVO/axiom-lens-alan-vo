@@ -286,4 +286,4 @@ REA에 도움을 보태 주세요! [issue를 등록](https://github.com/morluto/
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

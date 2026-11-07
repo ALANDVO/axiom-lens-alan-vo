@@ -58,4 +58,4 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

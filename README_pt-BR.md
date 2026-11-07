@@ -284,4 +284,4 @@ Consulte [CONTRIBUTING.md](CONTRIBUTING.md) para configurar o ambiente de desenv
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)

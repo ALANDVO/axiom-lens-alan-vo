@@ -86,4 +86,4 @@ See [testing](testing.md) for the native loading oracle and CLI/MCP real lane.
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)
