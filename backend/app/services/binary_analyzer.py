@@ -8,6 +8,7 @@ from typing import Optional, Dict, Any, List
 import subprocess
 import json
 
+import re
 
 class BinaryAnalyzer:
     """Basic binary file analyzer for metadata extraction."""
@@ -147,22 +148,48 @@ class BinaryAnalyzer:
         sections = []
         lines = output.split('\n')
         in_table = False
-        for line in lines:
+        i = 0
+        # Regex to match section lines: "  [ 0] name type address offset"
+        # or "  [10] name type address offset"
+        section_line_re = re.compile(r'^\s*\[\s*(\d+)\s*\]\s+(\S+)?\s+(\S+)\s+(\S+)\s+(\S+)')
+        # Regex to match the continuation line with flags: "       size entsize flags link info align"
+        cont_line_re = re.compile(r'^\s*\S+\s+\S+\s+(\S+)')
+        
+        while i < len(lines):
+            line = lines[i]
             if 'Section Headers:' in line:
                 in_table = True
+                i += 1
                 continue
-            if in_table and line.strip() and not line.startswith('['):
-                parts = line.split()
-                if len(parts) >= 8 and parts[0].isdigit():
+            if in_table and line.strip():
+                match = section_line_re.match(line)
+                if match:
+                    index = match.group(1)
+                    name = match.group(2) or ""
+                    type_ = match.group(3)
+                    address = match.group(4)
+                    offset = match.group(5)
+                    
+                    # Get flags from next line if available
+                    flags = ""
+                    if i + 1 < len(lines):
+                        next_match = cont_line_re.match(lines[i + 1])
+                        if next_match:
+                            flags = next_match.group(1)
+                    
                     sections.append({
-                        "index": parts[0],
-                        "name": parts[1],
-                        "type": parts[2],
-                        "address": parts[3],
-                        "offset": parts[4],
-                        "size": parts[5],
-                        "flags": parts[7] if len(parts) > 7 else "",
+                        "index": index,
+                        "name": name,
+                        "type": type_,
+                        "address": address,
+                        "offset": offset,
+                        "flags": flags,
                     })
+                    i += 2  # Skip the next line too
+                    continue
+                i += 1  # Move to next line if not a section line
+            else:
+                i += 1
         return sections[:50]  # Limit to 50 sections
     
     def _parse_readelf_symbols(self, output: str) -> List[Dict[str, str]]:
@@ -176,16 +203,18 @@ class BinaryAnalyzer:
                 continue
             if in_table and line.strip():
                 parts = line.split()
-                if len(parts) >= 8 and parts[0].isdigit():
+                # Symbol lines look like: "     0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND "
+                # parts[0] is like "0:" (with trailing colon), so strip it
+                if len(parts) >= 7 and parts[0].rstrip(':').isdigit():
                     symbols.append({
-                        "index": parts[0],
+                        "index": parts[0].rstrip(':'),
                         "value": parts[1],
                         "size": parts[2],
                         "type": parts[3],
                         "bind": parts[4],
                         "vis": parts[5],
                         "ndx": parts[6],
-                        "name": parts[7],
+                        "name": parts[7] if len(parts) >= 8 else "",
                     })
         return symbols[:100]  # Limit to 100 symbols
     
