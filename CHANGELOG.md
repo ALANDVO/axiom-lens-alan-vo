@@ -1,8 +1,27 @@
 # Changelog
 
+## 1.6.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.5.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+\## 1.5.1 — AI-assisted function insights
+
+### Added
+- AI-assisted function labeling based on binary strings and symbols
+- Labeled insights: system_call (high confidence), memory_management (medium), string_literal (low)
+- Opt-in ai_insights field in analysis results
+- Test coverage for AI insights generation and validation
+
+### Changed
+- BinaryAnalyzer now includes ai_insights in analysis results
+- AnalysisUpdate and AnalysisResponse schemas include ai_insights field
+
+### Known Issues
+- AI insights are advisory-only and based on pattern matching, not LLM-generated
+- ELF symbol insights limited to known pattern categories
 
 ## 1.4.0 — work-in-progress checkpoint
 

@@ -75,6 +75,7 @@ class AnalysisUpdate(BaseModel):
     status: Optional[str] = Field(None, pattern="^(pending|running|completed|failed)$")
     result: Optional[dict] = None
     error: Optional[str] = None
+    ai_insights: Optional[list] = None
 
 
 class AnalysisResponse(AnalysisBase):
@@ -85,6 +86,7 @@ class AnalysisResponse(AnalysisBase):
     target_hash: Optional[str] = None
     result: Optional[dict] = None
     error: Optional[str] = None
+    ai_insights: Optional[list] = None
     created_at: datetime
     updated_at: datetime
     completed_at: Optional[datetime] = None

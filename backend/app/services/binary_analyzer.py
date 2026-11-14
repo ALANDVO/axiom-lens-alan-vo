@@ -25,6 +25,7 @@ class BinaryAnalyzer:
             "file_info": self._get_file_info(),
             "file_type": self._get_file_type(),
             "strings": self._extract_strings(),
+        "ai_insights": self._get_ai_insights(),
         }
         
         # Try to get more detailed info for ELF/PE/Mach-O
@@ -293,6 +294,71 @@ class BinaryAnalyzer:
             info["error"] = str(e)
         
         return info
+
+
+    def _get_ai_insights(self) -> List[Dict[str, Any]]:
+        """Get AI-assisted function insights based on strings and symbols.
+
+        Provides labeled advisory insights about functions based on
+        extracted strings, symbol names, and binary patterns.
+        Opt-in: results are included only when explicitly requested.
+        """
+        insights = []
+
+        # Extract function-like insights from strings
+        strings = self._extract_strings(min_length=8, max_strings=50)
+
+        # Label strings that look like function names or API calls
+        for s in strings:
+            lower = s.lower()
+            # System call patterns
+            if any(pattern in lower for pattern in ["open", "read", "write", "close", "exit", "fork"]):
+                insights.append({
+                    "type": "function_label",
+                    "label": s,
+                    "confidence": "high",
+                    "category": "system_call",
+                })
+            # Memory allocation patterns
+            elif any(keyword in lower for keyword in ["malloc", "calloc", "free", "alloc"]):
+                insights.append({
+                    "type": "function_label",
+                    "label": s,
+                    "confidence": "medium",
+                    "category": "memory_management",
+                })
+            # String literals that might be format strings or messages
+            elif s.startswith('"') and s.endswith('"'):
+                insights.append({
+                    "type": "function_label",
+                    "label": s[1:-1],
+                    "confidence": "low",
+                    "category": "string_literal",
+                })
+
+        # Insights from ELF symbols
+        elf_info = self._analyze_elf()
+        if "symbols" in elf_info and "error" not in elf_info.get("summary", {}):
+            symbols = elf_info["symbols"]
+            # Label common symbol patterns
+            for sym in symbols[:30]:  # Limit to first 30 symbols
+                name = sym.get("name", "").lower()
+                if "init" in name or "start" in name:
+                    insights.append({
+                        "type": "function_label",
+                        "label": sym.get("name", ""),
+                        "confidence": "medium",
+                        "category": "entry_point",
+                    })
+                if "fini" in name or "end" in name:
+                    insights.append({
+                        "type": "function_label",
+                        "label": sym.get("name", ""),
+                        "confidence": "medium",
+                        "category": "exit_point",
+                    })
+
+        return insights
 
 
 def analyze_binary(file_path: Path) -> Dict[str, Any]:
