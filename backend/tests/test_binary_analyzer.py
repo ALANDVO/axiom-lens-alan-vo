@@ -228,3 +228,70 @@ Section Headers:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+class TestBinaryAnalyzerAIInsights:
+    """Tests for AI-assisted function insights."""
+
+    @pytest.fixture
+    def binary_with_strings(self):
+        """Create a binary file with known strings for AI insight testing."""
+        import tempfile
+        import os
+        from pathlib import Path
+        fd, path = tempfile.mkstemp(suffix=".bin")
+        try:
+            with os.fdopen(fd, "wb") as f:
+                # Write strings that will trigger AI labels
+                f.write(b"openfile")
+                f.write(b"readconfig")
+                f.write(b"mallocbuffer")
+                f.write(b"test_symbol_init")
+                f.write(b"printf_format")
+            yield Path(path)
+        finally:
+            Path(path).unlink(missing_ok=True)
+
+    def test_ai_insights_from_strings(self, binary_with_strings):
+        """Test that AI insights are generated from strings."""
+        from backend.app.services.binary_analyzer import analyze_binary
+        result = analyze_binary(binary_with_strings)
+        ai_insights = result.get("ai_insights", [])
+
+        assert isinstance(ai_insights, list)
+        assert len(ai_insights) > 0
+
+        # Check that system call patterns are labeled
+        labels = [i["label"] for i in ai_insights]
+        assert any("open" in l.lower() for l in labels)
+        assert any("read" in l.lower() for l in labels)
+        assert any("malloc" in l.lower() for l in labels)
+
+    def test_ai_insights_confidence_categories(self, binary_with_strings):
+        """Test that AI insights have proper confidence and category."""
+        from backend.app.services.binary_analyzer import analyze_binary
+        result = analyze_binary(binary_with_strings)
+        ai_insights = result.get("ai_insights", [])
+
+        for insight in ai_insights:
+            assert "type" in insight
+            assert "label" in insight
+            assert "confidence" in insight
+            assert "category" in insight
+            assert insight["confidence"] in ("high", "medium", "low")
+            assert insight["category"] in (
+                "system_call",
+                "memory_management",
+                "string_literal",
+                "entry_point",
+                "exit_point",
+            )
+
+    def test_ai_insights_opt_in(self, binary_with_strings):
+        """Test that ai_insights is always included (opt-in is always on in this implementation)."""
+        from backend.app.services.binary_analyzer import analyze_binary
+        result = analyze_binary(binary_with_strings)
+        assert "ai_insights" in result
+        assert result["ai_insights"] is not None
+
+
