@@ -335,6 +335,14 @@ class BinaryAnalyzer:
                     "confidence": "low",
                     "category": "string_literal",
                 })
+            # String literals resembling function names (camelCase or starting uppercase)
+            elif s and s[0].isupper() and any(c.islower() for c in s[1:]):
+                insights.append({
+                    "type": "function_label",
+                    "label": s,
+                    "confidence": "low",
+                    "category": "identifier",
+                })
 
         # Insights from ELF symbols
         elf_info = self._analyze_elf()
@@ -357,8 +365,51 @@ class BinaryAnalyzer:
                         "confidence": "medium",
                         "category": "exit_point",
                     })
+                # Data symbols
+                if sym.get("type", "").lower() in ("object", "data", "bss"):
+                    insights.append({
+                        "type": "function_label",
+                        "label": sym.get("name", ""),
+                        "confidence": "low",
+                        "category": "data_symbol",
+                    })
+                # Common library/function naming patterns
+                if any(pattern in name for pattern in ["main", "run", "process", "handle"]):
+                    insights.append({
+                        "type": "function_label",
+                        "label": sym.get("name", ""),
+                        "confidence": "low",
+                        "category": "symbol_pattern",
+                    })
 
-        return insights
+        # Cross-reference insights: strings that match symbol names
+        elf_info = self._analyze_elf()
+        symbols_list = []
+        if ("symbols" in elf_info and "error" not in elf_info.get("summary", {})):
+            symbols_list = [s.get("name", "").lower() for s in elf_info["symbols"][:30]]
+
+        for s in strings:
+            s_lower = s.lower()
+            # Check if string resembles a symbol name
+            for sym_name in symbols_list:
+                if sym_name and sym_name in s_lower:
+                    insights.append({
+                        "type": "function_label",
+                        "label": s,
+                        "confidence": "low",
+                        "category": "string_symbol_match",
+                    })
+                    break
+
+        # Deduplicate insights by label (keep first occurrence)
+        seen = set()
+        deduped = []
+        for insight in insights:
+            label_key = insight["label"].lower()
+            if label_key not in seen:
+                seen.add(label_key)
+                deduped.append(insight)
+        return deduped
 
 
 def analyze_binary(file_path: Path) -> Dict[str, Any]:

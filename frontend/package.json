@@ -1,6 +1,6 @@
 {
   "name": "axiom-lens-frontend",
-  "version": "1.0.0",
+  "version": "1.7.0",
   "description": "Axiom Lens - AI-assisted Reverse Engineering Analysis Platform (Frontend)",
   "type": "module",
   "scripts": {
