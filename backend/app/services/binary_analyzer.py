@@ -327,6 +327,18 @@ class BinaryAnalyzer:
                     "confidence": "medium",
                     "category": "memory_management",
                 })
+            # Win32 API call patterns
+            elif any(pattern in lower for pattern in [
+                "createfile", "readfile", "writefile", "closehandle",
+                "getfileattributes", "setfilepointer", "findfirstfile",
+                "findnextfile", "deletefile", "movefile", "copymovefile"
+            ]):
+                insights.append({
+                    "type": "function_label",
+                    "label": s,
+                    "confidence": "high",
+                    "category": "win32_api",
+                })
             # String literals that might be format strings or messages
             elif s.startswith('"') and s.endswith('"'):
                 insights.append({
